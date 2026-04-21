@@ -8,43 +8,45 @@ use App\Models\Car;
 
 class CarController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        return response()->json(
+            Car::with('images')->get()
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCarRequest $request)
     {
-        //
+        $car = Car::create($request->validated());
+
+        return response()->json(
+            $car->load('images'),
+            201
+        );
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Car $car)
     {
-        //
+        return response()->json(
+            $car->load('images')
+        );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateCarRequest $request, Car $car)
     {
-        //
+        $car->update($request->validated());
+
+        return response()->json(
+            $car->load('images')
+        );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Car $car)
     {
-        //
+        $car->delete();
+
+        return response()->json(null,204);
     }
 }
