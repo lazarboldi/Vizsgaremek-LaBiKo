@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class CarResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'make' => $this->make,
+            'color' => $this->color,
+            'description' => $this->description,
+            'year' => $this->year,
+            'mileage' => $this->mileage,
+            'fuel_type' => $this->fuel_type,
+            'transmission' => $this->transmission,
+            'engine_size' => $this->engine_size,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+}
