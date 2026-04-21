@@ -13,4 +13,12 @@ class Listings extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the users who have favourited this listing.
+     */
+    public function favouritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favourites', 'listing_id', 'user_id')->withTimestamps();
+    }
 }

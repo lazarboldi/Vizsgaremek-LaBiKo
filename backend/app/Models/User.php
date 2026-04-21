@@ -56,4 +56,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Listings::class);
     }
+
+    /**
+     * Get the favourite listings for the user.
+     */
+    public function favourites()
+    {
+        return $this->belongsToMany(Listings::class, 'favourites', 'user_id', 'listing_id')->withTimestamps();
+    }
 }
