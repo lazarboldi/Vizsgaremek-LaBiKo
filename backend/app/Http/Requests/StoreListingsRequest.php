@@ -22,6 +22,7 @@ class StoreListingsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'car_id' => 'required|exists:cars,id',
             'price' => 'required|integer|min:0',
             'status' => 'nullable|in:active,sold,archived',
         ];

@@ -13,6 +13,7 @@ class Listings extends Model
      */
     protected $fillable = [
         'user_id',
+        'car_id',
         'price',
         'status',
     ];
@@ -23,6 +24,14 @@ class Listings extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the car associated with this listing.
+     */
+    public function car()
+    {
+        return $this->belongsTo(Car::class);
     }
 
     /**
