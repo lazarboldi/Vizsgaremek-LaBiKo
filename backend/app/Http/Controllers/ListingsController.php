@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreListingsRequest;
 use App\Http\Requests\UpdateListingsRequest;
+use App\Http\Resources\ListingsResource;
 use App\Models\Listings;
 
 class ListingsController extends Controller
@@ -13,7 +14,8 @@ class ListingsController extends Controller
      */
     public function index()
     {
-        //
+        $listings = Listings::with('user')->get();
+        return ListingsResource::collection($listings);
     }
 
     /**
@@ -21,7 +23,12 @@ class ListingsController extends Controller
      */
     public function store(StoreListingsRequest $request)
     {
-        //
+        $listing = Listings::create([
+            'user_id' => auth()->id(),
+            'price' => $request->validated('price'),
+            'status' => $request->validated('status') ?? 'active',
+        ]);
+        return new ListingsResource($listing->load('user'));
     }
 
     /**
@@ -29,7 +36,7 @@ class ListingsController extends Controller
      */
     public function show(Listings $listings)
     {
-        //
+        return new ListingsResource($listings->load(['user', 'favouritedBy']));
     }
 
     /**
@@ -37,7 +44,8 @@ class ListingsController extends Controller
      */
     public function update(UpdateListingsRequest $request, Listings $listings)
     {
-        //
+        $listings->update($request->validated());
+        return new ListingsResource($listings->load('user'));
     }
 
     /**
@@ -45,6 +53,8 @@ class ListingsController extends Controller
      */
     public function destroy(Listings $listings)
     {
-        //
+        $listings->delete();
+        return response()->noContent();
     }
 }
+

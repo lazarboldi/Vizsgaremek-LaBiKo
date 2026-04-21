@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ListingsController;
 
 
 Route::post('/registration', [RegistrationController::class, 'registration'])
@@ -16,3 +17,6 @@ Route::get('/users/{id}', [UserController::class, 'show'])
 
 Route::post('/login', [AuthController::class, 'authenticate'])
     ->name('login');
+
+// Listings resource routes
+Route::apiResource('listings', ListingsController::class);

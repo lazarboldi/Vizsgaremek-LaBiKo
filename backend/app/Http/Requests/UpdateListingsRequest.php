@@ -11,7 +11,7 @@ class UpdateListingsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class UpdateListingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'price' => 'sometimes|integer|min:0',
+            'status' => 'sometimes|in:active,sold,archived',
         ];
     }
 }
