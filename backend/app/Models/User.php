@@ -48,4 +48,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the listings for the user.
+     */
+    public function listings()
+    {
+        return $this->hasMany(Listings::class);
+    }
 }
