@@ -11,7 +11,7 @@ class UpdateInterestRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class UpdateInterestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'email' => ['sometimes', 'string', 'email', 'max:255'],
         ];
     }
 }

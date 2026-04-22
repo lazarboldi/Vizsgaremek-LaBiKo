@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\CarimageController;
 use App\Http\Controllers\ListingsController;
+use App\Http\Controllers\InterestController;
 
 
 Route::post('/registration', [RegistrationController::class, 'registration'])
@@ -23,3 +24,5 @@ Route::post('/login', [AuthController::class, 'authenticate'])
 Route::apiResource('listings', ListingsController::class);
 
 Route::apiResource('cars', CarController::class);
+
+Route::apiResource('interests', InterestController::class);

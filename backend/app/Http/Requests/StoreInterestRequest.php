@@ -11,7 +11,7 @@ class StoreInterestRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreInterestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'receiver_id' => ['required', 'integer', 'exists:users,id'],
+            'listing_id' => ['required', 'integer', 'exists:listings,id'],
         ];
     }
 }
