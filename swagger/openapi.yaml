@@ -1,15 +1,47 @@
 openapi: 3.0.1
 info:
-  title: HelloWorld API
+  title: LaBiKo AutoKer API
+  description: API for automotive marketplace platform
   version: 1.0.0
+servers:
+  - url: http://localhost/api
+    description: Development server
+
 paths:
-  /hello:
-    get:
-      operationId: hello.world
-      summary: Returns a greeting
+  /registration:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - phone
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                phone:
+                  type: string
+                  example: +36201234567
       responses:
-        '200':
-          description: A friendly greeting
+        '201':
+          description: User successfully registered
           content:
             application/json:
               schema:
@@ -17,4 +49,521 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Hello, world!
+                  user:
+                    $ref: '#/components/schemas/User'
+
+  /login:
+    post:
+      summary: Authenticate user and get token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      user:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+        '401':
+          description: Invalid credentials
+
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+  /listings:
+    get:
+      summary: Get all listings
+      tags:
+        - Listings
+      responses:
+        '200':
+          description: List of all listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Listing'
+
+    post:
+      summary: Create a new listing
+      tags:
+        - Listings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - car_id
+                - price
+              properties:
+                car_id:
+                  type: integer
+                price:
+                  type: number
+                  format: double
+                status:
+                  type: string
+                  default: active
+                  enum: [active, inactive, sold]
+      responses:
+        '201':
+          description: Listing created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+
+  /listings/{id}:
+    get:
+      summary: Get a specific listing
+      tags:
+        - Listings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Listing found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '404':
+          description: Listing not found
+
+    patch:
+      summary: Update a listing
+      tags:
+        - Listings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                  format: double
+                status:
+                  type: string
+                  enum: [active, inactive, sold]
+      responses:
+        '200':
+          description: Listing updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+
+    delete:
+      summary: Delete a listing
+      tags:
+        - Listings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Listing deleted successfully
+
+  /cars:
+    get:
+      summary: Get all cars
+      tags:
+        - Cars
+      responses:
+        '200':
+          description: List of all cars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+
+    post:
+      summary: Create a new car
+      tags:
+        - Cars
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarInput'
+      responses:
+        '201':
+          description: Car created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+
+  /cars/{id}:
+    get:
+      summary: Get a specific car
+      tags:
+        - Cars
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Car found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '404':
+          description: Car not found
+
+    patch:
+      summary: Update a car
+      tags:
+        - Cars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarInput'
+      responses:
+        '200':
+          description: Car updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+
+    delete:
+      summary: Delete a car
+      tags:
+        - Cars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Car deleted successfully
+
+  /interests:
+    get:
+      summary: Get all interests for authenticated user
+      tags:
+        - Interests
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User interests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sentInterests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Interest'
+                  receivedInterests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Interest'
+
+    post:
+      summary: Create a new interest
+      tags:
+        - Interests
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - receiver_id
+                - listing_id
+              properties:
+                email:
+                  type: string
+                  format: email
+                receiver_id:
+                  type: integer
+                listing_id:
+                  type: integer
+      responses:
+        '201':
+          description: Interest created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interest'
+
+  /interests/{id}:
+    get:
+      summary: Get a specific interest
+      tags:
+        - Interests
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Interest found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interest'
+        '404':
+          description: Interest not found
+
+    patch:
+      summary: Update an interest
+      tags:
+        - Interests
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Interest updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interest'
+
+    delete:
+      summary: Delete an interest
+      tags:
+        - Interests
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Interest deleted successfully
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CarInput:
+      type: object
+      required:
+        - make
+        - model
+        - year
+      properties:
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+
+    Listing:
+      type: object
+      properties:
+        id:
+          type: integer
+        price:
+          type: number
+          format: double
+        status:
+          type: string
+          enum: [active, inactive, sold]
+        user:
+          $ref: '#/components/schemas/User'
+        car:
+          $ref: '#/components/schemas/Car'
+        favouritedBy:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Interest:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
+        listing:
+          $ref: '#/components/schemas/Listing'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
