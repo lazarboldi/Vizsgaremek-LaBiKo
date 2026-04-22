@@ -64,4 +64,20 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Listings::class, 'favourites', 'user_id', 'listing_id')->withTimestamps();
     }
+
+    /**
+     * Get the interests sent by this user.
+     */
+    public function sentInterests()
+    {
+        return $this->hasMany(Interest::class, 'sender_id');
+    }
+
+    /**
+     * Get the interests received by this user.
+     */
+    public function receivedInterests()
+    {
+        return $this->hasMany(Interest::class, 'receiver_id');
+    }
 }

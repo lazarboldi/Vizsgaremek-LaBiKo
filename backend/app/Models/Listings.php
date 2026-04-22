@@ -41,4 +41,12 @@ class Listings extends Model
     {
         return $this->belongsToMany(User::class, 'favourites', 'listing_id', 'user_id')->withTimestamps();
     }
+
+    /**
+     * Get the interests for this listing.
+     */
+    public function interests()
+    {
+        return $this->hasMany(Interest::class, 'listing_id');
+    }
 }
