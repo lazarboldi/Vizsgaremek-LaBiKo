@@ -2,12 +2,37 @@
 import {
   ChevronRight,
 } from 'lucide-vue-next'
+import { computed, onMounted } from 'vue'
 
 import BaseCard from '@components/layout/BaseCard.vue'
 import BaseHeader from '@components/layout/BaseHeader.vue'
 import { useHomeStore } from '@stores/HomeStore.mjs'
+import { useListing } from '@stores/NewListingStore.mjs'
 
 const homeStore = useHomeStore()
+const listingStore = useListing()
+
+// Kombinálja az eredeti autókat és az újonnan létrehozottakat
+const allCars = computed(() => {
+  const mappedListings = listingStore.listings.map(listing => ({
+    id: listing.car?.id || listing.id,
+    title: `${listing.car?.make} ${listing.car?.model}`,
+    description: listing.car?.description || '',
+    brand: listing.car?.make || '',
+    model: listing.car?.model || '',
+    year: listing.car?.year || '',
+    price: listing.price || '',
+    fuelType: listing.car?.fuel_type || '',
+    bodyType: listing.car?.bodyType || '',
+    mileage: listing.car?.mileage || '',
+    transmission: listing.car?.transmission || ''
+  }))
+  return [...homeStore.cars, ...mappedListings]
+})
+
+onMounted(async () => {
+  await listingStore.getListings()
+})
 </script>
 
 <template>
@@ -50,7 +75,7 @@ const homeStore = useHomeStore()
         </p>
 
         <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
-          <BaseCard v-for="car in homeStore.cars" :key="car.id" :car="car" />
+          <BaseCard v-for="car in allCars" :key="car.id" :car="car" />
         </div>
       </section>
     </main>
