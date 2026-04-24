@@ -27,16 +27,29 @@ export const useListing = defineStore('listings', () => {
   async function createListing(data) {
     // Először egy autót hozunk létre
     const carResponse = await api.post('cars', {
-      make: data.brand,
+      brand: data.brand,
       model: data.model,
       description: data.description,
       year: data.year,
       mileage: data.mileage,
       fuel_type: data.fuelType,
-      transmission: data.transmission
+      transmission: data.transmission,
+      color: data.color,
+      engine_size: data.engineSize
     })
 
     const carId = carResponse.data.data.id
+
+    // ha vannak képek, feltöltjük őket
+    if (data.images && data.images.length > 0) {
+      for (const image of data.images) {
+        const formData = new FormData()
+        formData.append('image', image)
+        formData.append('car_id', carId)
+        
+        await api.post('carimages', formData)
+      }
+    }
 
     // Majd létrehozunk egy Listing-et a car_idval
     const response = await api.post('listings', {
