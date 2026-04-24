@@ -15,7 +15,7 @@ class StoreCarimageRequest extends FormRequest
     {
         return [
             'car_id' => ['required','exists:cars,id'],
-            'image_url' => ['required', 'string', 'max:255']
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120']
         ];
     }
 }

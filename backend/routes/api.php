@@ -25,4 +25,6 @@ Route::apiResource('listings', ListingsController::class);
 
 Route::apiResource('cars', CarController::class);
 
+Route::apiResource('carimages', CarimageController::class)->only(['store', 'destroy']);
+
 Route::apiResource('interests', InterestController::class);
