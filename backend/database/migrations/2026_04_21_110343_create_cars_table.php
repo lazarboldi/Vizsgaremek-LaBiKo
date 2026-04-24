@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('color');
             $table->year('year');
             $table->integer('mileage');
-            $table->string('make');
             $table->string('fuel_type');
             $table->string('transmission');
             $table->integer('engine_size');
