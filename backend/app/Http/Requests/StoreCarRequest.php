@@ -15,6 +15,7 @@ class StoreCarRequest extends FormRequest
     {
         return [
             'make' => ['required', 'string', 'max:255'],
+            'brand' => ['required', 'string', 'max:100'],
             'model' => ['required','string','max:255'],
             'color' => ['required','string','max:100'],
             'description' => ['required','string'],
