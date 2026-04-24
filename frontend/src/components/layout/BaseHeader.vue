@@ -5,7 +5,11 @@ import { useRouter } from 'vue-router'
 import { Menu, X } from 'lucide-vue-next'
 import { useAuthStore } from '@stores/AuthStore.mjs'
 
-const navigationItems = ['Autókereskedés', 'Kedvencek']
+const navigationItems = [
+  { label: 'Autókereskedés', route: '/' },
+  { label: 'Kedvencek', route: '/' },
+  { label: 'Új hírdetés', route: '/listing/new', isActive: false }
+]
 
 const isMenuOpen = ref(false)
 const router = useRouter()
@@ -36,17 +40,17 @@ const logout = () => {
         </RouterLink>
 
         <nav class="hidden items-center gap-6 md:flex" aria-label="Fő navigáció">
-          <a
+          <RouterLink
             v-for="item in navigationItems"
-            :key="item"
-            href="#"
+            :key="item.label"
+            :to="item.route"
             :class="[
               'text-base font-semibold text-slate-300 no-underline transition-colors hover:text-white',
-              item === 'Autókereskedés' ? 'text-orange-500' : ''
+              item.label === 'Autókereskedés' ? 'text-orange-500' : ''
             ]"
           >
-            {{ item }}
-          </a>
+            {{ item.label }}
+          </RouterLink>
         </nav>
 
         <div class="hidden items-center gap-3 md:flex">
@@ -85,18 +89,18 @@ const logout = () => {
 
       <div v-if="isMenuOpen" class="mt-3 rounded-lg border border-slate-700 bg-slate-900 p-3 md:hidden">
         <nav class="flex flex-col gap-2" aria-label="Fő navigáció mobil">
-          <a
+          <RouterLink
             v-for="item in navigationItems"
-            :key="item"
-            href="#"
+            :key="item.label"
+            :to="item.route"
             :class="[
               'rounded-md px-2 py-2 text-sm font-semibold text-slate-200 no-underline hover:bg-slate-800',
-              item === 'Autókereskedés' ? 'text-orange-500' : ''
+              item.label === 'Autókereskedés' ? 'text-orange-500' : ''
             ]"
             @click="closeMenu"
           >
-            {{ item }}
-          </a>
+            {{ item.label }}
+          </RouterLink>
         </nav>
 
         <div v-if="isAuthenticated" class="mt-3">
