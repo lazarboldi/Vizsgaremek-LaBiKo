@@ -68,8 +68,7 @@ export const useListing = defineStore('listings', () => {
         
         await api.post('carimages', formData, {
           headers: {
-            ...authHeaders,
-            'Content-Type': 'multipart/form-data'
+            ...authHeaders
           }
         })
       }
