@@ -23,8 +23,16 @@ class ListingsController extends Controller
      */
     public function store(StoreListingsRequest $request)
     {
+        $userId = auth()->id() ?? auth('sanctum')->id();
+
+        if (!$userId) {
+            return response()->json([
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
         $listing = Listings::create([
-            'user_id' => auth()->id(),
+            'user_id' => $userId,
             'car_id' => $request->validated('car_id'),
             'price' => $request->validated('price'),
             'status' => $request->validated('status') ?? 'active',
