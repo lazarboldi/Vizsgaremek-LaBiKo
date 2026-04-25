@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { api } from '@utils/http.mjs'
+import { useAuthStore } from '@stores/AuthStore.mjs'
 
 const LISTINGS_STORAGE_KEY = 'listings_data'
 
@@ -25,6 +26,17 @@ export const useListing = defineStore('listings', () => {
   }
 
   async function createListing(data) {
+    const authStore = useAuthStore()
+    const token = authStore.token
+
+    if (!token) {
+      throw new Error('A hirdetés létrehozásához be kell jelentkezned.')
+    }
+
+    const authHeaders = {
+      Authorization: `Bearer ${token}`
+    }
+
     // Először egy autót hozunk létre
     const carResponse = await api.post('cars', {
       brand: data.brand,
@@ -37,9 +49,15 @@ export const useListing = defineStore('listings', () => {
       color: data.color,
       engine_size: data.engineSize,
       body_type: data.bodyType
+    }, {
+      headers: authHeaders
     })
 
-    const carId = carResponse.data.id
+    const carId = carResponse?.data?.data?.id
+
+    if (!carId) {
+      throw new Error('Nem sikerült létrehozni az autó adatait.')
+    }
 
     // ha vannak képek, feltöltjük őket
     if (data.images && data.images.length > 0) {
@@ -48,7 +66,12 @@ export const useListing = defineStore('listings', () => {
         formData.append('image', image)
         formData.append('car_id', carId)
         
-        await api.post('carimages', formData)
+        await api.post('carimages', formData, {
+          headers: {
+            ...authHeaders,
+            'Content-Type': 'multipart/form-data'
+          }
+        })
       }
     }
 
@@ -57,6 +80,8 @@ export const useListing = defineStore('listings', () => {
       car_id: carId,
       price: data.price,
       status: 'active'
+    }, {
+      headers: authHeaders
     })
 
     const newListing = response.data.data
