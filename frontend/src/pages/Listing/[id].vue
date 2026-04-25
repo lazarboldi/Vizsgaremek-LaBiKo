@@ -70,6 +70,16 @@ const formatPrice = (value) => {
   return `${new Intl.NumberFormat('hu-HU').format(numeric)} Ft`
 }
 
+const formatMileage = (value) => {
+  const numeric = Number(value)
+
+  if (Number.isNaN(numeric)) {
+    return 'Nincs megadva'
+  }
+
+  return `${new Intl.NumberFormat('hu-HU').format(numeric)} km`
+}
+
 onMounted(async () => {
   loading.value = true
   errorMessage.value = ''
@@ -157,8 +167,8 @@ onMounted(async () => {
                 <dd class="mt-1 text-base font-semibold text-slate-800">{{ listing.car?.year || 'Nincs megadva' }}</dd>
               </div>
               <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Futott km</dt>
-                <dd class="mt-1 text-base font-semibold text-slate-800">{{ listing.car?.mileage || 'Nincs megadva' }}</dd>
+                <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Futott táv</dt>
+                <dd class="mt-1 text-base font-semibold text-slate-800">{{ formatMileage(listing.car?.mileage)}}</dd>
               </div>
               <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                 <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Üzemanyag</dt>
@@ -169,8 +179,8 @@ onMounted(async () => {
                 <dd class="mt-1 text-base font-semibold text-slate-800">{{ listing.car?.transmission || 'Nincs megadva' }}</dd>
               </div>
               <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Motor cm³</dt>
-                <dd class="mt-1 text-base font-semibold text-slate-800">{{ listing.car?.engine_size || 'Nincs megadva' }}</dd>
+                <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Motor térfogat</dt>
+                <dd class="mt-1 text-base font-semibold text-slate-800">{{ listing.car?.engine_size || 'Nincs megadva' }}{{ listing.car?.engine_size ? ' cm³' : '' }}</dd>
               </div>
               <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                 <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Karosszéria</dt>

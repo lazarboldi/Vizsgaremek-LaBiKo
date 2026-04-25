@@ -13,13 +13,23 @@ const homeStore = useListingStore()
 const newListingStore = useListing()
 const filterValue = ref('')
 
+const truncateDescription = (text) => {
+  const value = String(text || '')
+
+  if (value.length <= 75) {
+    return value
+  }
+
+  return `${value.slice(0, 72)}...`
+}
+
 // Kombinálja az eredeti autókat és az újonnan létrehozottakat
 const allCars = computed(() => {
   const mappedListings = newListingStore.listings.map(listing => ({
     listingId: listing.id,
     id: listing.car?.id || listing.id,
     title: `${listing.car?.brand || ''} ${listing.car?.model || ''}`.trim(),
-    description: listing.car?.description || '',
+    description: truncateDescription(listing.car?.description),
     brand: listing.car?.brand || '',
     model: listing.car?.model || '',
     year: listing.car?.year || '',
@@ -36,6 +46,7 @@ const allCars = computed(() => {
 
     return {
       ...car,
+      description: truncateDescription(car.description),
       listingId: relatedListing?.id || null
     }
   }).filter(car => !car.listingId)
