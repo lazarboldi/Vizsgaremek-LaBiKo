@@ -116,6 +116,30 @@ class DatabaseSeeder extends Seeder
                     'https://i.imgur.com/qFA1afc.jpeg',
                 ],
             ],
+
+            [
+                'car' => [
+                    'brand' => 'Opel',
+                    'model' => 'J-Astra GTC',
+                    'color' => 'Sárga',
+                    'description' => 'Egy sportos, háromajtós kompakt autó az Opel kínálatában. Dinamikus dizájn, feszesebb futómű és turbós motorok jellemzik, így a praktikum mellé élvezetes vezetést is ad.',
+                    'year' => 2012,
+                    'mileage' => 337000,
+                    'fuel_type' => 'Dízel',
+                    'transmission' => 'Manuális',
+                    'engine_size' => 2000,
+                    'body_type' => 'Ferdehátú',
+                ],
+                'listing' => [
+                    'price' => 2670000,
+                    'status' => 'active',
+                ],
+                'photos' => [
+                    'https://i.imgur.com/YFs9RTR.jpeg',
+                    'https://i.imgur.com/ryyVYO5.jpeg',
+                    'https://i.imgur.com/nJsVS5d.jpeg',
+                ],
+            ],
         ];
 
         foreach ($examples as $index => $example) {
