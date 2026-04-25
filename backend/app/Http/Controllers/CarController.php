@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCarRequest;
 use App\Http\Requests\UpdateCarRequest;
+use App\Http\Resources\CarResource;
 use App\Models\Car;
 
 class CarController extends Controller
@@ -11,7 +12,7 @@ class CarController extends Controller
 
     public function index()
     {
-        return response()->json(
+        return CarResource::collection(
             Car::with('images')->get()
         );
     }
@@ -20,16 +21,15 @@ class CarController extends Controller
     {
         $car = Car::create($request->validated());
 
-        return response()->json(
-            $car->load('images'),
-            201
+        return new CarResource(
+            $car->load('images')
         );
     }
 
 
     public function show(Car $car)
     {
-        return response()->json(
+        return new CarResource(
             $car->load('images')
         );
     }
@@ -38,7 +38,7 @@ class CarController extends Controller
     {
         $car->update($request->validated());
 
-        return response()->json(
+        return new CarResource(
             $car->load('images')
         );
     }
@@ -47,6 +47,6 @@ class CarController extends Controller
     {
         $car->delete();
 
-        return response()->json(null,204);
+        return response()->noContent();
     }
 }

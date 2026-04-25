@@ -22,7 +22,8 @@ class StoreCarRequest extends FormRequest
             'mileage' => ['required','integer','min:0'],
             'fuel_type' => ['required','string','max:100'],
             'transmission' => ['required','string','max:100'],
-            'engine_size' => ['required','integer','min:1']
+            'engine_size' => ['required','integer','min:1'],
+            'body_type' => ['required','string','max:100']
         ];
     }
 }

@@ -25,6 +25,7 @@ class CarResource extends JsonResource
             'fuel_type' => $this->fuel_type,
             'transmission' => $this->transmission,
             'engine_size' => $this->engine_size,
+            'body_type' => $this->body_type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

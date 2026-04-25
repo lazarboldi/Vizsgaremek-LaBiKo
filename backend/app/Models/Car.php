@@ -15,7 +15,8 @@ class Car extends Model
         'mileage',
         'fuel_type',
         'transmission',
-        'engine_size'
+        'engine_size',
+        'body_type'
     ];
 
     public function images()

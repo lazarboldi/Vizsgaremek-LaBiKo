@@ -35,10 +35,11 @@ export const useListing = defineStore('listings', () => {
       fuel_type: data.fuelType,
       transmission: data.transmission,
       color: data.color,
-      engine_size: data.engineSize
+      engine_size: data.engineSize,
+      body_type: data.bodyType
     })
 
-    const carId = carResponse.data.data.id
+    const carId = carResponse.data.id
 
     // ha vannak képek, feltöltjük őket
     if (data.images && data.images.length > 0) {

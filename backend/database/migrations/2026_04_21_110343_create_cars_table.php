@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('fuel_type');
             $table->string('transmission');
             $table->integer('engine_size');
-            
+            $table->string('body_type');
             $table->timestamps();
         });
     }
