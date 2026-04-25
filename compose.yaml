@@ -63,6 +63,7 @@ services:
     networks:
      - fullstack
     volumes:
+     - ./backend:/www:rw
      - ./webserver/nginx.conf:/etc/nginx/nginx.conf:ro
      - ./webserver/conf.d:/etc/nginx/conf.d:ro
      - ./responsive:/responsive:rw
