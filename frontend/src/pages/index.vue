@@ -16,16 +16,17 @@ const listingStore = useListing()
 const allCars = computed(() => {
   const mappedListings = listingStore.listings.map(listing => ({
     id: listing.car?.id || listing.id,
-    title: `${listing.car?.make} ${listing.car?.model}`,
+    title: `${listing.car?.brand || ''} ${listing.car?.model || ''}`.trim(),
     description: listing.car?.description || '',
-    brand: listing.car?.make || '',
+    brand: listing.car?.brand || '',
     model: listing.car?.model || '',
     year: listing.car?.year || '',
     price: listing.price || '',
     fuelType: listing.car?.fuel_type || '',
-    bodyType: listing.car?.bodyType || '',
+    bodyType: listing.car?.body_type || '',
     mileage: listing.car?.mileage || '',
-    transmission: listing.car?.transmission || ''
+    transmission: listing.car?.transmission || '',
+    image_url: listing.car?.images?.[0]?.image_url || ''
   }))
   return [...homeStore.cars, ...mappedListings]
 })
