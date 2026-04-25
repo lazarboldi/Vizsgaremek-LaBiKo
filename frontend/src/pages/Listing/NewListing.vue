@@ -1,11 +1,13 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useListing } from '@stores/NewListingStore.mjs'
+import { useAuthStore } from '@stores/AuthStore.mjs'
 import BaseHeader from '@components/layout/BaseHeader.vue'
 
 const router = useRouter()
 const listingStore = useListing()
+const authStore = useAuthStore()
 
 const form = ref({
   title: '',
@@ -26,6 +28,12 @@ const form = ref({
 const isLoading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+
+onMounted(() => {
+  if (!authStore.isAuthenticated) {
+    router.replace('/auth/login?redirect=/listing/new')
+  }
+})
 
 const handleImageUpload = (event) => {
   const files = Array.from(event.target.files)

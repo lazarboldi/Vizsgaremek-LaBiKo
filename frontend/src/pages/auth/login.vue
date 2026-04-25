@@ -1,14 +1,26 @@
 <script setup>
 import { storeToRefs } from 'pinia'
+import { useRoute, useRouter } from 'vue-router'
 
 import BaseHeader from '@components/layout/BaseHeader.vue'
 import { useAuthStore } from '@stores/AuthStore.mjs'
 
 const authStore = useAuthStore()
 const { loading, errorMessage, successMessage, loginForm, isAuthenticated } = storeToRefs(authStore)
+const route = useRoute()
+const router = useRouter()
 
 const submit = async () => {
   await authStore.login()
+
+  if (!authStore.isAuthenticated) {
+    return
+  }
+
+  const redirectTarget = String(route.query.redirect || '/')
+  const safeRedirectTarget = redirectTarget.startsWith('/') ? redirectTarget : '/'
+
+  await router.push(safeRedirectTarget)
 }
 </script>
 
