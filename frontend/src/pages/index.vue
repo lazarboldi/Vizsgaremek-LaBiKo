@@ -2,19 +2,20 @@
 import {
   ChevronRight,
 } from 'lucide-vue-next'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import BaseCard from '@components/layout/BaseCard.vue'
 import BaseHeader from '@components/layout/BaseHeader.vue'
-import { useHomeStore } from '@stores/HomeStore.mjs'
+import { useListingStore } from '@stores/ListingStore.mjs'
 import { useListing } from '@stores/NewListingStore.mjs'
 
-const homeStore = useHomeStore()
-const listingStore = useListing()
+const homeStore = useListingStore()
+const newListingStore = useListing()
+const filterValue = ref('')
 
 // Kombinálja az eredeti autókat és az újonnan létrehozottakat
 const allCars = computed(() => {
-  const mappedListings = listingStore.listings.map(listing => ({
+  const mappedListings = newListingStore.listings.map(listing => ({
     id: listing.car?.id || listing.id,
     title: `${listing.car?.brand || ''} ${listing.car?.model || ''}`.trim(),
     description: listing.car?.description || '',
@@ -31,8 +32,48 @@ const allCars = computed(() => {
   return [...homeStore.cars, ...mappedListings]
 })
 
+const activeFilterLabel = computed(() => {
+  const activeFilter = homeStore.filters.find(filter => filter.id === homeStore.activeFilterId)
+  return activeFilter?.label || 'Szűrés'
+})
+
+const filteredCars = computed(() => {
+  const query = filterValue.value.trim().toLowerCase()
+
+  if (!query) {
+    return allCars.value
+  }
+
+  return allCars.value.filter((car) => {
+    switch (homeStore.activeFilterId) {
+      case 'brand':
+        return (car.brand || '').toLowerCase().includes(query)
+      case 'model':
+        return (car.model || '').toLowerCase().includes(query)
+      case 'body':
+        return (car.bodyType || '').toLowerCase().includes(query)
+      case 'fuel':
+        return (car.fuelType || '').toLowerCase().includes(query)
+      case 'year':
+        return String(car.year || '').includes(query)
+      case 'price': {
+        const maxPrice = Number(query)
+        if (Number.isNaN(maxPrice)) {
+          return true
+        }
+        return Number(car.price || 0) <= maxPrice
+      }
+      default:
+        return true
+    }
+  })
+})
+
 onMounted(async () => {
-  await listingStore.getListings()
+  await Promise.all([
+    homeStore.getCars(),
+    newListingStore.getListings()
+  ])
 })
 </script>
 
@@ -67,6 +108,15 @@ onMounted(async () => {
             </button>
           </li>
         </ul>
+
+        <div class="px-4 pb-4">
+          <input
+            v-model="filterValue"
+            type="text"
+            :placeholder="`${activeFilterLabel}...`"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
+          />
+        </div>
       </aside>
 
       <section aria-label="Autók listázása">
@@ -76,8 +126,12 @@ onMounted(async () => {
         </p>
 
         <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
-          <BaseCard v-for="car in allCars" :key="car.id" :car="car" />
+          <BaseCard v-for="car in filteredCars" :key="car.id" :car="car" />
         </div>
+
+        <p v-if="filteredCars.length === 0" class="mt-4 text-base font-semibold text-slate-500">
+          Nincs találat a megadott szűrőfeltételre.
+        </p>
       </section>
     </main>
   </div>
