@@ -72,7 +72,7 @@ const logout = () => {
             to="/auth/login"
             class="items-center rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-bold text-white no-underline shadow-md hover:bg-orange-600"
           >
-            <span>Bejelentkezés / Regisztráció</span>
+            <span>Bejelentkezés</span>
           </RouterLink>
         </div>
 
