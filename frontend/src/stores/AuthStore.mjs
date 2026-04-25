@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('auth', {
       this.resetMessages()
 
       try {
-        const { data } = await api.post('/api/login', this.loginForm)
+        const { data } = await api.post('login', this.loginForm)
         this.token = data?.data?.token ?? null
         const fullName = data?.data?.user?.name ?? ''
         this.userName = usernameFromFullName(fullName)
@@ -60,7 +60,7 @@ export const useAuthStore = defineStore('auth', {
       this.resetMessages()
 
       try {
-        const { data } = await api.post('/api/registration', this.registerForm)
+        const { data } = await api.post('registration', this.registerForm)
         this.userName = usernameFromFullName(this.registerForm.name)
         this.successMessage = data?.message ?? 'Sikeres regisztracio.'
         this.registerForm = defaultRegisterForm()
