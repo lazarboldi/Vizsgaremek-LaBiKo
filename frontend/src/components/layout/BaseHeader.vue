@@ -6,7 +6,6 @@ import { Menu, X } from 'lucide-vue-next'
 import { useAuthStore } from '@stores/AuthStore.mjs'
 
 const navigationItems = [
-  { label: 'Autókereskedés', route: '/' },
   { label: 'Kedvencek', route: '/' },
   { label: 'Új hírdetés', route: '/listing/new', isActive: false }
 ]
@@ -32,8 +31,9 @@ const logout = () => {
 </script>
 
 <template>
-  <header class="bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 shadow-lg">
-    <div class="mx-auto max-w-[1320px] px-4 py-3 md:px-6">
+  <header class="mt-3 px-4 md:mt-4 md:px-6">
+    <div class="mx-auto max-w-[1320px] rounded-2xl border border-white/15 bg-gradient-to-r from-slate-950/90 via-slate-900/90 to-blue-950/90 shadow-lg shadow-slate-950/40 backdrop-blur-xl">
+      <div class="px-4 py-2.5 md:px-6 md:py-3">
       <div class="flex items-center justify-between gap-3">
         <RouterLink to="/" class="inline-flex items-center gap-2 text-white no-underline" aria-label="CarLink főoldal">
           <span class="text-3xl font-bold tracking-tight max-sm:text-2xl">CarLink</span>
@@ -78,7 +78,7 @@ const logout = () => {
 
         <button
           type="button"
-          class="inline-flex items-center justify-center rounded-lg border border-slate-700 p-2 text-white md:hidden"
+          class="inline-flex items-center justify-center rounded-lg border border-slate-600/90 bg-slate-900/40 p-2 text-white md:hidden"
           aria-label="Menünyitás"
           @click="toggleMenu"
         >
@@ -87,7 +87,7 @@ const logout = () => {
         </button>
       </div>
 
-      <div v-if="isMenuOpen" class="mt-3 rounded-lg border border-slate-700 bg-slate-900 p-3 md:hidden">
+      <div v-if="isMenuOpen" class="mt-3 rounded-xl border border-white/15 bg-gradient-to-r from-slate-950/90 via-slate-900/90 to-blue-950/90 p-3 shadow-lg shadow-slate-950/40 backdrop-blur-xl md:hidden">
         <nav class="flex flex-col gap-2" aria-label="Fő navigáció mobil">
           <RouterLink
             v-for="item in navigationItems"
@@ -122,6 +122,7 @@ const logout = () => {
         >
           <span>Bejelentkezés / Regisztráció</span>
         </RouterLink>
+      </div>
       </div>
     </div>
   </header>
