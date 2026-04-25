@@ -14,7 +14,7 @@ class ListingsController extends Controller
      */
     public function index()
     {
-        $listings = Listings::with('user', 'car')->get();
+        $listings = Listings::with('user', 'car.images')->get();
         return ListingsResource::collection($listings);
     }
 
@@ -37,7 +37,7 @@ class ListingsController extends Controller
             'price' => $request->validated('price'),
             'status' => $request->validated('status') ?? 'active',
         ]);
-        return new ListingsResource($listing->load(['user', 'car']));
+        return new ListingsResource($listing->load(['user', 'car.images']));
     }
 
     /**
@@ -45,7 +45,7 @@ class ListingsController extends Controller
      */
     public function show(Listings $listings)
     {
-        return new ListingsResource($listings->load(['user', 'car', 'favouritedBy']));
+        return new ListingsResource($listings->load(['user', 'car.images', 'favouritedBy']));
     }
 
     /**
@@ -54,7 +54,7 @@ class ListingsController extends Controller
     public function update(UpdateListingsRequest $request, Listings $listings)
     {
         $listings->update($request->validated());
-        return new ListingsResource($listings->load(['user', 'car']));
+        return new ListingsResource($listings->load(['user', 'car.images']));
     }
 
     /**

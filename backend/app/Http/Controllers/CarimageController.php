@@ -15,10 +15,11 @@ class CarimageController extends Controller
         // file feltöltés
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('cars', 'public');
+            $publicPath = Storage::disk('public')->url($imagePath);
             
             $carimage = Carimage::create([
                 'car_id' => $validated['car_id'],
-                'image_url' => Storage::url($imagePath)
+                'image_url' => url($publicPath)
             ]);
             
             return response()->json($carimage, 201);
@@ -31,7 +32,8 @@ class CarimageController extends Controller
     {
         // törlés a storage-ból
         if ($carimage->image_url) {
-            $path = str_replace('/storage/', '', $carimage->image_url);
+            $urlPath = parse_url($carimage->image_url, PHP_URL_PATH) ?? $carimage->image_url;
+            $path = ltrim(str_replace('/storage/', '', $urlPath), '/');
             Storage::disk('public')->delete($path);
         }
         
