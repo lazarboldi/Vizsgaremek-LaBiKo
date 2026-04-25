@@ -38,7 +38,19 @@ const handleSubmit = async () => {
   successMessage.value = ''
 
   try {
-    if (!form.value.title || !form.value.description || !form.value.price) {
+    if (
+      !form.value.description ||
+      !form.value.brand ||
+      !form.value.model ||
+      !form.value.year ||
+      !form.value.price ||
+      !form.value.fuelType ||
+      !form.value.bodyType ||
+      !form.value.mileage ||
+      !form.value.transmission ||
+      !form.value.color ||
+      !form.value.engineSize
+    ) {
       errorMessage.value = 'Kérjük, töltse ki a kötelező mezőket!'
       isLoading.value = false
       return
@@ -69,7 +81,11 @@ const handleSubmit = async () => {
       router.push('/')
     }, 1500)
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || 'Hiba a hírdetés létrehozásakor!'
+    const validationErrors = error.response?.data?.errors
+    const firstValidationError = validationErrors
+      ? Object.values(validationErrors)[0]?.[0]
+      : null
+    errorMessage.value = firstValidationError || error.response?.data?.message || error.message || 'Hiba a hírdetés létrehozásakor!'
     console.error(error)
   } finally {
     isLoading.value = false
