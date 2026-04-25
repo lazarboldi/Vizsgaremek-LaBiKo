@@ -13,12 +13,14 @@ class StoreCarRequest extends FormRequest
 
     public function rules(): array
     {
+        $maxYear = (int) date('Y') + 1;
+
         return [
             'brand' => ['required', 'string', 'max:100'],
             'model' => ['required','string','max:255'],
             'color' => ['required','string','max:100'],
             'description' => ['required','string'],
-            'year' => ['required','integer','min:1900','max:2100'],
+            'year' => ['required','integer','min:1900','max:' . $maxYear],
             'mileage' => ['required','integer','min:0'],
             'fuel_type' => ['required','string','max:100'],
             'transmission' => ['required','string','max:100'],
