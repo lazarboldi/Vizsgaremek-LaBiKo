@@ -89,5 +89,30 @@ export const useListing = defineStore('listings', () => {
     return newListing
   }
 
-  return { listings, getListings, createListing }
+  async function getListingById(id) {
+    const localListing = listings.value.find(listing => String(listing.id) === String(id))
+
+    if (localListing) {
+      return localListing
+    }
+
+    const response = await api.get(`listings/${id}`)
+    const listing = response?.data?.data || response?.data || null
+
+    if (listing) {
+      const existingIndex = listings.value.findIndex(item => String(item.id) === String(listing.id))
+
+      if (existingIndex >= 0) {
+        listings.value[existingIndex] = listing
+      } else {
+        listings.value.push(listing)
+      }
+
+      saveListingsToStorage(listings.value)
+    }
+
+    return listing
+  }
+
+  return { listings, getListings, createListing, getListingById }
 })

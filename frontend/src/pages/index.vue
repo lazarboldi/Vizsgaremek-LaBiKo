@@ -16,6 +16,7 @@ const filterValue = ref('')
 // Kombinálja az eredeti autókat és az újonnan létrehozottakat
 const allCars = computed(() => {
   const mappedListings = newListingStore.listings.map(listing => ({
+    listingId: listing.id,
     id: listing.car?.id || listing.id,
     title: `${listing.car?.brand || ''} ${listing.car?.model || ''}`.trim(),
     description: listing.car?.description || '',
@@ -29,7 +30,17 @@ const allCars = computed(() => {
     transmission: listing.car?.transmission || '',
     image_url: listing.car?.images?.[0]?.image_url || ''
   }))
-  return [...homeStore.cars, ...mappedListings]
+
+  const mappedCars = homeStore.cars.map(car => {
+    const relatedListing = newListingStore.listings.find(listing => String(listing.car?.id) === String(car.id))
+
+    return {
+      ...car,
+      listingId: relatedListing?.id || null
+    }
+  }).filter(car => !car.listingId)
+
+  return [...mappedCars, ...mappedListings]
 })
 
 const activeFilterLabel = computed(() => {
@@ -126,7 +137,7 @@ onMounted(async () => {
         </p>
 
         <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
-          <BaseCard v-for="car in filteredCars" :key="car.id" :car="car" />
+          <BaseCard v-for="car in filteredCars" :key="`${car.listingId || 'car'}-${car.id}`" :car="car" />
         </div>
 
         <p v-if="filteredCars.length === 0" class="mt-4 text-base font-semibold text-slate-500">

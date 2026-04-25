@@ -33,6 +33,10 @@ const handleImageUpload = (event) => {
 }
 
 const handleSubmit = async () => {
+  if (isLoading.value) {
+    return
+  }
+
   isLoading.value = true
   errorMessage.value = ''
   successMessage.value = ''
@@ -56,7 +60,12 @@ const handleSubmit = async () => {
       return
     }
 
-    await listingStore.createListing(form.value)
+    const createdListing = await listingStore.createListing(form.value)
+
+    if (!createdListing?.id) {
+      throw new Error('Nem sikerült betölteni az új hirdetés azonosítóját.')
+    }
+
     successMessage.value = 'Hírdetés sikeresen létrehozva!'
     
     // form "lenullázása"
@@ -76,10 +85,7 @@ const handleSubmit = async () => {
       images: []
     }
 
-    // 1,5 mp múlva átírányít
-    setTimeout(() => {
-      router.push('/')
-    }, 1500)
+    await router.push(`/listing/${createdListing.id}`)
   } catch (error) {
     const validationErrors = error.response?.data?.errors
     const firstValidationError = validationErrors
