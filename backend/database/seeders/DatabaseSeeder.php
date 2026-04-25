@@ -92,6 +92,30 @@ class DatabaseSeeder extends Seeder
                     'https://i.imgur.com/CF5Ss2T.jpeg',
                 ],
             ],
+
+            [
+                'car' => [
+                    'brand' => 'Volkswagen',
+                    'model' => 'Jetta',
+                    'color' => 'Ezüst',
+                    'description' => 'A Volkswagen Jetta (A6) egy kompakt autó, a Volkswagen Jetta hatodik generációja és a Jetta (A5) utódja. Fejlesztése során NCS (New Compact Sedan) néven ismert modell 2010-ben jelent meg.',
+                    'year' => 2013,
+                    'mileage' => 200000,
+                    'fuel_type' => 'Benzin',
+                    'transmission' => 'Manuális',
+                    'engine_size' => 1200,
+                    'body_type' => 'Sedán',
+                ],
+                'listing' => [
+                    'price' => 4200000,
+                    'status' => 'active',
+                ],
+                'photos' => [
+                    'https://i.imgur.com/JtnJoLj.jpeg',
+                    'https://i.imgur.com/yuaaIMU.jpeg',
+                    'https://i.imgur.com/qFA1afc.jpeg',
+                ],
+            ],
         ];
 
         foreach ($examples as $index => $example) {
