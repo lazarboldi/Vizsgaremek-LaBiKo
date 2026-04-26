@@ -22,6 +22,11 @@ Route::get('/users/{id}', [UserController::class, 'show'])
 Route::post('/login', [AuthController::class, 'authenticate'])
     ->name('login');
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users/me', [UserController::class, 'me'])
+        ->name('users.me');
+});
+
 Route::apiResource('listings', ListingsController::class);
 
 Route::apiResource('cars', CarController::class);
