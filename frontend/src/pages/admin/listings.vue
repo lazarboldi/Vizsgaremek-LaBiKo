@@ -3,10 +3,12 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseLayout from '@layouts/BaseLayout.vue'
 import { useAuthStore } from '@stores/AuthStore.mjs'
+import { useListing } from '@stores/NewListingStore.mjs'
 import { api } from '@utils/http.mjs'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const listingStore = useListing()
 
 const listings = ref([])
 const loading = ref(false)
@@ -61,6 +63,12 @@ const deleteListing = async (listingId) => {
     })
 
     listings.value = listings.value.filter(item => Number(item.id) !== Number(listingId))
+
+    try {
+      listingStore.removeListingFromState(listingId)
+    } catch {
+    }
+
     successMessage.value = 'A hirdetés sikeresen törölve.'
   } catch (error) {
     errorMessage.value = error.response?.data?.message || 'Nem sikerült törölni a hirdetést.'
