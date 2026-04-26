@@ -8,6 +8,7 @@ use App\Http\Resources\ListingsResource;
 use App\Models\Listings;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ListingsController extends Controller
 {
@@ -46,24 +47,24 @@ class ListingsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Listings $listings)
+    public function show(Listings $listing)
     {
-        return new ListingsResource($listings->load(['user', 'car.images', 'favouritedBy']));
+        return new ListingsResource($listing->load(['user', 'car.images', 'favouritedBy']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateListingsRequest $request, Listings $listings)
+    public function update(UpdateListingsRequest $request, Listings $listing)
     {
-        $listings->update($request->validated());
-        return new ListingsResource($listings->load(['user', 'car.images']));
+        $listing->update($request->validated());
+        return new ListingsResource($listing->load(['user', 'car.images']));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Listings $listings)
+    public function destroy(Listings $listing)
     {
         $user = Auth::guard('sanctum')->user() ?? Auth::user();
 
@@ -73,13 +74,24 @@ class ListingsController extends Controller
             ], 401);
         }
 
-        if (!$user->isAdmin() && (int) $listings->user_id !== (int) $user->id) {
+        if (!$user->isAdmin() && (int) $listing->user_id !== (int) $user->id) {
             return response()->json([
                 'message' => 'Forbidden.'
             ], 403);
         }
 
-        $listings->delete();
+        DB::transaction(function () use ($listing): void {
+            $listing->favouritedBy()->detach();
+
+            $car = $listing->car;
+
+            $listing->delete();
+
+            if ($car) {
+                $car->delete();
+            }
+        });
+
         return response()->noContent();
     }
 }

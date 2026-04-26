@@ -7,21 +7,37 @@ const LISTINGS_STORAGE_KEY = 'listings_data'
 
 // betölti a hirdetéseket a localstorageból
 const loadListingsFromStorage = () => {
-  const stored = localStorage.getItem(LISTINGS_STORAGE_KEY)
-  return stored ? JSON.parse(stored) : []
+  try {
+    const stored = localStorage.getItem(LISTINGS_STORAGE_KEY)
+    const parsed = stored ? JSON.parse(stored) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
 }
 
 // Ment a localstorageba
 const saveListingsToStorage = (listings) => {
-  localStorage.setItem(LISTINGS_STORAGE_KEY, JSON.stringify(listings))
+  try {
+    localStorage.setItem(LISTINGS_STORAGE_KEY, JSON.stringify(listings))
+  } catch {
+
+  }
 }
 
 export const useListing = defineStore('listings', () => {
   const listings = ref(loadListingsFromStorage())
 
+  function removeListingFromState(listingId) {
+    const safeListings = Array.isArray(listings.value) ? listings.value : []
+    listings.value = safeListings.filter(item => String(item.id) !== String(listingId))
+    saveListingsToStorage(listings.value)
+  }
+
   async function getListings() {
     const response = await api.get('listings')
-    listings.value = response.data.data || []
+    const fetched = response?.data?.data
+    listings.value = Array.isArray(fetched) ? fetched : []
     saveListingsToStorage(listings.value)
   }
 
@@ -90,6 +106,26 @@ export const useListing = defineStore('listings', () => {
     return newListing
   }
 
+  async function deleteListing(listingId) {
+    const authStore = useAuthStore()
+    const token = authStore.token
+
+    if (!token) {
+      throw new Error('A hirdetés törléséhez be kell jelentkezned.')
+    }
+
+    await api.delete(`listings/${listingId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    try {
+      removeListingFromState(listingId)
+    } catch {
+    }
+  }
+
   async function getListingById(id) {
     const localListing = listings.value.find(listing => String(listing.id) === String(id))
 
@@ -115,5 +151,5 @@ export const useListing = defineStore('listings', () => {
     return listing
   }
 
-  return { listings, getListings, createListing, getListingById }
+  return { listings, getListings, createListing, deleteListing, getListingById, removeListingFromState }
 })
