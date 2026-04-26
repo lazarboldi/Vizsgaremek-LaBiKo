@@ -1,6 +1,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import lightbox from 'lightbox2'
+import 'lightbox2/dist/css/lightbox.css'
 
 import BaseHeader from '@components/layout/BaseHeader.vue'
 import { useListing } from '@stores/NewListingStore.mjs'
@@ -80,7 +82,25 @@ const formatMileage = (value) => {
   return `${new Intl.NumberFormat('hu-HU').format(numeric)} km`
 }
 
+const formatHorsepower = (value) => {
+  const numeric = Number(value)
+
+  if (Number.isNaN(numeric)) {
+    return 'Nincs megadva'
+  }
+
+  return `${new Intl.NumberFormat('hu-HU').format(numeric)} LE`
+}
+
 onMounted(async () => {
+  lightbox.option({
+    resizeDuration: 200,
+    wrapAround: true,
+    fadeDuration: 200,
+    imageFadeDuration: 200,
+    disableScrolling: true
+  })
+
   loading.value = true
   errorMessage.value = ''
 
@@ -128,10 +148,26 @@ onMounted(async () => {
       <section v-else-if="listing" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_minmax(0,1fr)]">
         <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-lg">
           <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-            <img
-              :src="coverPhoto"
-              :alt="listingTitle"
-              class="block h-[320px] w-full object-cover md:h-[420px]"
+            <a
+              :href="coverPhoto"
+              :data-lightbox="`listing-${listingId}`"
+              :data-title="listingTitle"
+              class="block"
+            >
+              <img
+                :src="coverPhoto"
+                :alt="listingTitle"
+                class="block h-[320px] w-full object-cover md:h-[420px]"
+              />
+            </a>
+
+            <a
+              v-for="(photo, index) in photos"
+              :key="`lightbox-photo-${index}`"
+              :href="photo"
+              :data-lightbox="`listing-${listingId}`"
+              :data-title="`${listingTitle} ${index + 1}`"
+              class="hidden"
             />
           </div>
 
@@ -181,6 +217,10 @@ onMounted(async () => {
               <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                 <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Motor térfogat</dt>
                 <dd class="mt-1 text-base font-semibold text-slate-800">{{ listing.car?.engine_size || 'Nincs megadva' }}{{ listing.car?.engine_size ? ' cm³' : '' }}</dd>
+              </div>
+              <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Teljesítmény</dt>
+                <dd class="mt-1 text-base font-semibold text-slate-800">{{ formatHorsepower(listing.horsepower) }}</dd>
               </div>
               <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                 <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Karosszéria</dt>
