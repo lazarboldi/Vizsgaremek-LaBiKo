@@ -4,13 +4,17 @@ import { useRouter } from 'vue-router'
 import BaseLayout from '@layouts/BaseLayout.vue'
 import carBlueImage from '@assets/images/home/car-blue.jpg'
 import { useAuthStore } from '@stores/AuthStore.mjs'
+import { useListing } from '@stores/NewListingStore.mjs'
 import { api } from '@utils/http.mjs'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const listingStore = useListing()
 
 const loading = ref(false)
 const errorMessage = ref('')
+const successMessage = ref('')
+const deletingListingId = ref(null)
 const profile = ref(null)
 const listings = ref([])
 
@@ -42,6 +46,38 @@ const resolveImageUrl = (url) => {
   return new URL(normalized, backendOrigin).toString()
 }
 
+const deleteOwnListing = async (listingId) => {
+  if (deletingListingId.value) {
+    return
+  }
+
+  const confirmed = window.confirm('Biztosan törölni szeretnéd ezt a hirdetést?')
+
+  if (!confirmed) {
+    return
+  }
+
+  deletingListingId.value = listingId
+  errorMessage.value = ''
+  successMessage.value = ''
+
+  try {
+    await listingStore.deleteListing(listingId)
+
+    try {
+      const safeListings = Array.isArray(listings.value) ? listings.value : []
+      listings.value = safeListings.filter(item => Number(item.id) !== Number(listingId))
+    } catch {
+    }
+
+    successMessage.value = 'A hirdetés sikeresen törölve.'
+  } catch (error) {
+    errorMessage.value = error.response?.data?.message || 'Nem sikerült törölni a hirdetést.'
+  } finally {
+    deletingListingId.value = null
+  }
+}
+
 const formatPrice = (value) => {
   const amount = Number(value)
 
@@ -69,6 +105,7 @@ const formattedRegisteredAt = computed(() => {
 const loadProfile = async () => {
   loading.value = true
   errorMessage.value = ''
+  successMessage.value = ''
 
   try {
     const response = await api.get('users/me', {
@@ -110,6 +147,9 @@ onMounted(async () => {
           <div v-else>
             <p v-if="errorMessage" class="mb-5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">
               {{ errorMessage }}
+            </p>
+            <p v-if="successMessage" class="mb-5 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm font-semibold text-green-700">
+              {{ successMessage }}
             </p>
 
             <article v-if="profile" class="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-5">
@@ -165,6 +205,14 @@ onMounted(async () => {
                     >
                       Megnyitás
                     </RouterLink>
+                    <button
+                      type="button"
+                      class="mt-3 ml-2 inline-flex items-center rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
+                      :disabled="deletingListingId === listing.id"
+                      @click="deleteOwnListing(listing.id)"
+                    >
+                      {{ deletingListingId === listing.id ? 'Törlés...' : 'Saját hirdetés törlése' }}
+                    </button>
                   </div>
                 </article>
               </div>
