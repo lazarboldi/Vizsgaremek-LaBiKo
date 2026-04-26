@@ -10,6 +10,7 @@ class RegistrationController extends Controller
     public function registration(StoreUserRequest $request)
     {
         $data = $request->validated();
+        $data['role'] = 'user';
         $user = User::create($data);
 
         return response()->json([

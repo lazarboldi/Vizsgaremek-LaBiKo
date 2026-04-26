@@ -6,6 +6,8 @@ use App\Http\Requests\StoreListingsRequest;
 use App\Http\Requests\UpdateListingsRequest;
 use App\Http\Resources\ListingsResource;
 use App\Models\Listings;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ListingsController extends Controller
 {
@@ -23,7 +25,7 @@ class ListingsController extends Controller
      */
     public function store(StoreListingsRequest $request)
     {
-        $userId = auth()->id() ?? auth('sanctum')->id();
+        $userId = Auth::id() ?? Auth::guard('sanctum')->id();
 
         if (!$userId) {
             return response()->json([
@@ -62,6 +64,20 @@ class ListingsController extends Controller
      */
     public function destroy(Listings $listings)
     {
+        $user = Auth::guard('sanctum')->user() ?? Auth::user();
+
+        if (!$user instanceof User) {
+            return response()->json([
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
+        if (!$user->isAdmin() && (int) $listings->user_id !== (int) $user->id) {
+            return response()->json([
+                'message' => 'Forbidden.'
+            ], 403);
+        }
+
         $listings->delete();
         return response()->noContent();
     }
