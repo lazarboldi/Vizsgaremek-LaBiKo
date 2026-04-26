@@ -1,11 +1,11 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Menu, X } from 'lucide-vue-next'
 import { useAuthStore } from '@stores/AuthStore.mjs'
 
-const navigationItems = [
+const baseNavigationItems = [
   { label: 'Kedvencek', route: '/' },
   { label: 'Új hírdetés', route: '/listing/new', isActive: false }
 ]
@@ -13,7 +13,18 @@ const navigationItems = [
 const isMenuOpen = ref(false)
 const router = useRouter()
 const authStore = useAuthStore()
-const { isAuthenticated, userName } = storeToRefs(authStore)
+const { isAuthenticated, userName, isAdmin } = storeToRefs(authStore)
+
+const navigationItems = computed(() => {
+  if (!isAdmin.value) {
+    return baseNavigationItems
+  }
+
+  return [
+    ...baseNavigationItems,
+    { label: 'Admin', route: '/admin/listings', isActive: false }
+  ]
+})
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
