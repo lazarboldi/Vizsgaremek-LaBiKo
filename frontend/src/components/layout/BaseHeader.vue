@@ -18,7 +18,7 @@ const { isAuthenticated, userName, isAdmin } = storeToRefs(authStore)
 const navigationItems = computed(() => {
   const items = [...baseNavigationItems]
 
-  if (isAuthenticated.value) {
+  if (isAuthenticated.value && !isAdmin.value) {
     items.push({ label: 'Profilom', route: '/my-profile', isActive: false })
   }
 
