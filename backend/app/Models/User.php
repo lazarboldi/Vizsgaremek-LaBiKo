@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
+        'role',
     ];
 
     /**
@@ -79,5 +80,13 @@ class User extends Authenticatable
     public function receivedInterests()
     {
         return $this->hasMany(Interest::class, 'receiver_id');
+    }
+
+    /**
+     * Check whether the user has admin role.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }
