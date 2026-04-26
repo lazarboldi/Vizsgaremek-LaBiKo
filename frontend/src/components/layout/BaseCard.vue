@@ -8,6 +8,47 @@ const props = defineProps({
   }
 })
 
+const formatPrice = (value) => {
+  const numeric = Number(value)
+
+  if (Number.isNaN(numeric)) {
+    return 'Nincs megadva'
+  }
+
+  return `${new Intl.NumberFormat('hu-HU').format(numeric)} Ft`
+}
+
+const formatYear = (value) => {
+  if (value === null || value === undefined || value === '') {
+    return 'N/A'
+  }
+
+  return String(value)
+}
+
+const formatMileage = (value) => {
+  const numeric = Number(value)
+
+  if (Number.isNaN(numeric)) {
+    return 'N/A km'
+  }
+
+  return `${new Intl.NumberFormat('hu-HU').format(numeric)} km`
+}
+
+const formatHorsepower = (value) => {
+  const rawValue = String(value ?? '').trim()
+  const normalized = rawValue.replace(',', '.')
+  const extracted = normalized.match(/\d+(?:\.\d+)?/)
+  const numeric = Number(extracted?.[0] ?? normalized)
+
+  if (Number.isNaN(numeric)) {
+    return 'N/A LE'
+  }
+
+  return `${new Intl.NumberFormat('hu-HU').format(numeric)} LE`
+}
+
 const backendOrigin = import.meta.env.VITE_BACKEND_URL?.replace(/\/api\/?$/, '/')
 
 const resolveImageUrl = (url) => {
@@ -37,9 +78,9 @@ const resolveImageUrl = (url) => {
   <RouterLink
     v-if="props.car.listingId"
     :to="`/listing/${props.car.listingId}`"
-    class="block overflow-hidden rounded-2xl border border-slate-200 bg-white text-inherit no-underline shadow-md transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
+    class="block h-full overflow-hidden rounded-2xl border border-slate-200 bg-white text-inherit no-underline shadow-md transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
   >
-    <article>
+    <article class="flex h-full flex-col">
       <div class="overflow-hidden">
         <img
           :src="resolveImageUrl(props.car.image_url)"
@@ -49,20 +90,30 @@ const resolveImageUrl = (url) => {
         />
       </div>
 
-      <div class="px-5 pt-5 pb-5">
+      <div class="flex flex-1 flex-col px-5 pt-5 pb-5">
         <h3 class="m-0 text-[2rem] leading-tight font-extrabold text-slate-800 max-[640px]:text-[1.6rem]">
           {{ props.car.title }}
         </h3>
         <p class="mt-3 mb-0 max-w-[33ch] text-[1.1rem] leading-relaxed text-slate-500 max-[640px]:text-base">
           {{ props.car.description }}
         </p>
+        <div class="mt-auto flex items-end justify-between gap-4 pt-4">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="rounded-full bg-slate-200 px-3 py-1 text-sm font-bold text-slate-600">{{ formatYear(props.car.year) }}</span>
+            <span class="rounded-full bg-slate-200 px-3 py-1 text-sm font-bold text-slate-600">{{ formatMileage(props.car.mileage) }}</span>
+            <span class="rounded-full bg-slate-200 px-3 py-1 text-sm font-bold text-slate-600">{{ formatHorsepower(props.car.horsepower) }}</span>
+          </div>
+          <p class="m-0 shrink-0 text-xl font-extrabold text-slate-900 max-[640px]:text-lg">
+            {{ formatPrice(props.car.price) }}
+          </p>
+        </div>
       </div>
     </article>
   </RouterLink>
 
   <article
     v-else
-    class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
+    class="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
   >
     <div class="overflow-hidden">
       <img
@@ -73,13 +124,23 @@ const resolveImageUrl = (url) => {
       />
     </div>
 
-    <div class="px-5 pt-5 pb-5">
+    <div class="flex flex-1 flex-col px-5 pt-5 pb-5">
       <h3 class="m-0 text-[2rem] leading-tight font-extrabold text-slate-800 max-[640px]:text-[1.6rem]">
         {{ props.car.title }}
       </h3>
       <p class="mt-3 mb-0 max-w-[33ch] text-[1.1rem] leading-relaxed text-slate-500 max-[640px]:text-base">
         {{ props.car.description }}
       </p>
+      <div class="mt-auto flex items-end justify-between gap-4 pt-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="rounded-full bg-slate-200 px-3 py-1 text-sm font-bold text-slate-600">{{ formatYear(props.car.year) }}</span>
+          <span class="rounded-full bg-slate-200 px-3 py-1 text-sm font-bold text-slate-600">{{ formatMileage(props.car.mileage) }}</span>
+          <span class="rounded-full bg-slate-200 px-3 py-1 text-sm font-bold text-slate-600">{{ formatHorsepower(props.car.horsepower) }}</span>
+        </div>
+        <p class="m-0 shrink-0 text-xl font-extrabold text-slate-900 max-[640px]:text-lg">
+          {{ formatPrice(props.car.price) }}
+        </p>
+      </div>
     </div>
   </article>
 </template>

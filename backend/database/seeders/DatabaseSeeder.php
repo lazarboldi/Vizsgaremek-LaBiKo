@@ -377,6 +377,56 @@ class DatabaseSeeder extends Seeder
                     'https://i.imgur.com/ElJKoiD.png',
                 ],
             ],
+
+            [
+                'car' => [
+                    'brand' => 'Volkswagen',
+                    'model' => 'Golf 6',
+                    'color' => 'Fekete',
+                    'description' => 'A Volkswagen Golf Mk6 1.4 TSI 160 a Volkswagen erősebb kompakt változata. Az 1.4 TSI motor (kompresszor + turbó) 160 lóerőt ad, így kifejezetten dinamikus, miközben megmarad a Golf kényelme és mindennapi használhatósága.',
+                    'year' => 2011,
+                    'mileage' => 180000,
+                    'fuel_type' => 'Benzin',
+                    'transmission' => 'Manuális',
+                    'engine_size' => 1400,
+                    'body_type' => 'Ferdehátú',
+                    'horsepower' => 160,
+                ],
+                'listing' => [
+                    'price' => 3000000,
+                    'status' => 'active',
+                ],
+                'photos' => [
+                    'https://i.imgur.com/yWQnjh3.jpeg',
+                    'https://i.imgur.com/oFz3bYu.png',
+                    'https://i.imgur.com/3tJZCp6.jpeg',
+                ],
+            ],
+
+            [
+                'car' => [
+                    'brand' => 'Volkswagen',
+                    'model' => 'Golf 6 GTD',
+                    'color' => 'Fehér',
+                    'description' => 'A Volkswagen Golf Mk6 GTD a Volkswagen sportos dízel változata. A 2.0 TDI motor erős nyomatékot és alacsony fogyasztást kínál, így dinamikus, mégis gazdaságos mindennapi használatra.',
+                    'year' => 2013,
+                    'mileage' => 180000,
+                    'fuel_type' => 'Dízel',
+                    'transmission' => 'Manuális',
+                    'engine_size' => 2000,
+                    'body_type' => 'Ferdehátú',
+                    'horsepower' => 170,
+                ],
+                'listing' => [
+                    'price' => 3500000,
+                    'status' => 'active',
+                ],
+                'photos' => [
+                    'https://i.imgur.com/uBoa85e.jpeg',
+                    'https://i.imgur.com/q0qacJf.jpeg',
+                    'https://i.imgur.com/FOHBPxG.jpeg',
+                ],
+            ],
         ];
 
         foreach ($examples as $index => $example) {
