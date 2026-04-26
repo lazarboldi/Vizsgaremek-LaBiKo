@@ -9,6 +9,7 @@ use App\Http\Controllers\CarController;
 use App\Http\Controllers\CarimageController;
 use App\Http\Controllers\ListingsController;
 use App\Http\Controllers\InterestController;
+use App\Http\Controllers\AdminListingController;
 
 
 Route::post('/registration', [RegistrationController::class, 'registration'])
@@ -28,3 +29,11 @@ Route::apiResource('cars', CarController::class);
 Route::apiResource('carimages', CarimageController::class)->only(['store', 'destroy']);
 
 Route::apiResource('interests', InterestController::class);
+
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/listings', [AdminListingController::class, 'index'])
+        ->name('admin.listings.index');
+    Route::delete('/listings/{listing}', [AdminListingController::class, 'destroy'])
+        ->whereNumber('listing')
+        ->name('admin.listings.destroy');
+});
