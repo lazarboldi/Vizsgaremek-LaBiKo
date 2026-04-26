@@ -16,14 +16,17 @@ const authStore = useAuthStore()
 const { isAuthenticated, userName, isAdmin } = storeToRefs(authStore)
 
 const navigationItems = computed(() => {
-  if (!isAdmin.value) {
-    return baseNavigationItems
+  const items = [...baseNavigationItems]
+
+  if (isAuthenticated.value) {
+    items.push({ label: 'Profilom', route: '/my-profile', isActive: false })
   }
 
-  return [
-    ...baseNavigationItems,
-    { label: 'Admin', route: '/admin/listings', isActive: false }
-  ]
+  if (isAdmin.value) {
+    items.push({ label: 'Admin', route: '/admin/listings', isActive: false })
+  }
+
+  return items
 })
 
 const toggleMenu = () => {
