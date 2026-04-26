@@ -17,6 +17,7 @@ class ListingsResource extends JsonResource
         return [
             'id' => $this->id,
             'price' => $this->price,
+            'horsepower' => $this->horsepower,
             'status' => $this->status,
             'user' => new UserResource($this->whenLoaded('user')),
             'car' => new CarResource($this->whenLoaded('car')),

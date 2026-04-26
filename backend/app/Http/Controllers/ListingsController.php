@@ -37,6 +37,7 @@ class ListingsController extends Controller
             'user_id' => $userId,
             'car_id' => $request->validated('car_id'),
             'price' => $request->validated('price'),
+            'horsepower' => $request->validated('horsepower'),
             'status' => $request->validated('status') ?? 'active',
         ]);
         return new ListingsResource($listing->load(['user', 'car.images']));

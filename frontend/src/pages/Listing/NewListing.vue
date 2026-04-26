@@ -16,6 +16,7 @@ const form = ref({
   model: '',
   year: '',
   price: '',
+  horsepower: '',
   fuelType: '',
   bodyType: '',
   mileage: '',
@@ -56,6 +57,7 @@ const handleSubmit = async () => {
       !form.value.model ||
       !form.value.year ||
       !form.value.price ||
+      !form.value.horsepower ||
       !form.value.fuelType ||
       !form.value.bodyType ||
       !form.value.mileage ||
@@ -84,6 +86,7 @@ const handleSubmit = async () => {
       model: '',
       year: '',
       price: '',
+      horsepower: '',
       fuelType: '',
       bodyType: '',
       mileage: '',
@@ -176,8 +179,8 @@ const handleSubmit = async () => {
               </div>
             </div>
 
-            <!-- évjárat és ár -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- évjárat, ár és lóerő -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label for="year" class="block text-sm font-semibold text-slate-700 mb-2">
                   Évjárat
@@ -187,6 +190,21 @@ const handleSubmit = async () => {
                   v-model="form.year"
                   type="number"
                   placeholder="pl. 2020"
+                  class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
+                />
+              </div>
+
+              <div>
+                <label for="horsepower" class="block text-sm font-semibold text-slate-700 mb-2">
+                  Lóerő <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="horsepower"
+                  v-model="form.horsepower"
+                  type="number"
+                  min="1"
+                  required
+                  placeholder="pl. 150"
                   class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                 />
               </div>

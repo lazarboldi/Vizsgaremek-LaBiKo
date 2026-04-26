@@ -15,6 +15,7 @@ class Listings extends Model
         'user_id',
         'car_id',
         'price',
+        'horsepower',
         'status',
     ];
 

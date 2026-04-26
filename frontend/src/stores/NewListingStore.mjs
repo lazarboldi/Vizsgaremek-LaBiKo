@@ -78,6 +78,7 @@ export const useListing = defineStore('listings', () => {
     const response = await api.post('listings', {
       car_id: carId,
       price: data.price,
+      horsepower: data.horsepower,
       status: 'active'
     }, {
       headers: authHeaders
