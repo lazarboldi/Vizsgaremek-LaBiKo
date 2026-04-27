@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseLayout from '@layouts/BaseLayout.vue'
+import BaseConfirmDialog from '@components/layout/BaseConfirmDialog.vue'
 import { useAuthStore } from '@stores/AuthStore.mjs'
 import { useListing } from '@stores/NewListingStore.mjs'
 import { api } from '@utils/http.mjs'
@@ -13,6 +14,8 @@ const listingStore = useListing()
 const listings = ref([])
 const loading = ref(false)
 const deletingListingId = ref(null)
+const pendingDeleteListingId = ref(null)
+const isDeleteDialogOpen = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 
@@ -42,17 +45,32 @@ const loadAdminListings = async () => {
   }
 }
 
-const deleteListing = async (listingId) => {
+const openDeleteDialog = (listingId) => {
   if (deletingListingId.value) {
     return
   }
 
-  const confirmed = window.confirm('Biztosan törölni szeretnéd ezt a hirdetést?')
+  pendingDeleteListingId.value = listingId
+  isDeleteDialogOpen.value = true
+}
 
-  if (!confirmed) {
+const closeDeleteDialog = () => {
+  isDeleteDialogOpen.value = false
+  pendingDeleteListingId.value = null
+}
+
+const deleteListing = async () => {
+  if (deletingListingId.value) {
     return
   }
 
+  const listingId = pendingDeleteListingId.value
+
+  if (!listingId) {
+    return
+  }
+
+  isDeleteDialogOpen.value = false
   deletingListingId.value = listingId
   errorMessage.value = ''
   successMessage.value = ''
@@ -74,6 +92,7 @@ const deleteListing = async (listingId) => {
     errorMessage.value = error.response?.data?.message || 'Nem sikerült törölni a hirdetést.'
   } finally {
     deletingListingId.value = null
+    pendingDeleteListingId.value = null
   }
 }
 
@@ -130,7 +149,7 @@ onMounted(async () => {
                   type="button"
                   class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
                   :disabled="deletingListingId === listing.id"
-                  @click="deleteListing(listing.id)"
+                  @click="openDeleteDialog(listing.id)"
                 >
                   {{ deletingListingId === listing.id ? 'Törlés...' : 'Hirdetés törlése' }}
                 </button>
@@ -140,6 +159,15 @@ onMounted(async () => {
         </section>
       </main>
     </div>
+    <BaseConfirmDialog
+      v-model="isDeleteDialogOpen"
+      title="Hirdetés törlése"
+      message="Biztosan törölni szeretnéd ezt a hirdetést? Ez a művelet nem vonható vissza."
+      confirm-text="Igen, törlöm"
+      cancel-text="Mégse"
+      @cancel="closeDeleteDialog"
+      @confirm="deleteListing"
+    />
   </BaseLayout>
 </template>
 
