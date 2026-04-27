@@ -14,6 +14,7 @@ const listingStore = useListing()
 const listings = ref([])
 const loading = ref(false)
 const deletingListingId = ref(null)
+const approvingListingId = ref(null)
 const pendingDeleteListingId = ref(null)
 const isDeleteDialogOpen = ref(false)
 const errorMessage = ref('')
@@ -22,6 +23,21 @@ const successMessage = ref('')
 const formatPrice = (value) => {
   const amount = Number(value || 0)
   return new Intl.NumberFormat('hu-HU').format(amount)
+}
+
+const statusLabel = (status) => {
+  switch (String(status || '').toLowerCase()) {
+    case 'pending':
+      return 'Jóváhagyásra vár'
+    case 'active':
+      return 'Aktív'
+    case 'sold':
+      return 'Eladva'
+    case 'archived':
+      return 'Archivált'
+    default:
+      return 'Ismeretlen'
+  }
 }
 
 const authHeaders = () => ({
@@ -60,7 +76,7 @@ const closeDeleteDialog = () => {
 }
 
 const deleteListing = async () => {
-  if (deletingListingId.value) {
+  if (deletingListingId.value || approvingListingId.value) {
     return
   }
 
@@ -96,6 +112,29 @@ const deleteListing = async () => {
   }
 }
 
+const approveListing = async (listingId) => {
+  if (deletingListingId.value || approvingListingId.value) {
+    return
+  }
+
+  approvingListingId.value = listingId
+  errorMessage.value = ''
+  successMessage.value = ''
+
+  try {
+    await api.patch(`admin/listings/${listingId}/approve`, {}, {
+      headers: authHeaders()
+    })
+
+    listings.value = listings.value.filter(item => Number(item.id) !== Number(listingId))
+    successMessage.value = 'A hirdetés jóváhagyva, megjelent a nyilvános listában.'
+  } catch (error) {
+    errorMessage.value = error.response?.data?.message || 'Nem sikerült jóváhagyni a hirdetést.'
+  } finally {
+    approvingListingId.value = null
+  }
+}
+
 onMounted(async () => {
   if (!authStore.isAuthenticated) {
     await router.replace('/auth/login?redirect=/admin/listings')
@@ -117,7 +156,7 @@ onMounted(async () => {
       <main class="mx-auto max-w-[1320px] px-4 pt-6 pb-10 md:px-6">
         <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
           <h1 class="m-0 text-[clamp(1.8rem,2.4vw,2.8rem)] font-extrabold text-slate-800">Admin hirdetéskezelés</h1>
-          <p class="mt-2 mb-6 text-slate-600">Itt az összes hirdetést megtekintheted és törölheted.</p>
+          <p class="mt-2 mb-6 text-slate-600">Itt az összes hirdetést megtekintheted, a várakozókat jóváhagyhatod, és kezelheted.</p>
           <p v-if="errorMessage" class="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">
             {{ errorMessage }}
           </p>
@@ -143,16 +182,34 @@ onMounted(async () => {
                   </h2>
                   <p class="mt-1 mb-0 text-sm text-slate-600">Hirdetés ID: {{ listing.id }}</p>
                   <p class="mt-1 mb-0 text-sm text-slate-600">Feltöltő: {{ listing.user?.name || 'Ismeretlen' }} ({{ listing.user?.email || 'n/a' }})</p>
+                  <p class="mt-1 mb-0 text-sm text-slate-600">Állapot: {{ statusLabel(listing.status) }}</p>
                   <p class="mt-1 mb-0 text-sm font-semibold text-slate-700">Ár: {{ formatPrice(listing.price) }} Ft</p>
                 </div>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
-                  :disabled="deletingListingId === listing.id"
-                  @click="openDeleteDialog(listing.id)"
-                >
-                  {{ deletingListingId === listing.id ? 'Törlés...' : 'Hirdetés törlése' }}
-                </button>
+                <div class="flex flex-wrap gap-2">
+                  <RouterLink
+                    :to="`/listing/${listing.id}`"
+                    class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 no-underline hover:bg-slate-50"
+                  >
+                    Megnyitás
+                  </RouterLink>
+                  <button
+                    v-if="listing.status === 'pending'"
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
+                    :disabled="approvingListingId === listing.id || Boolean(deletingListingId)"
+                    @click="approveListing(listing.id)"
+                  >
+                    {{ approvingListingId === listing.id ? 'Jóváhagyás...' : 'Jóváhagyás' }}
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
+                    :disabled="deletingListingId === listing.id || Boolean(approvingListingId)"
+                    @click="openDeleteDialog(listing.id)"
+                  >
+                    {{ deletingListingId === listing.id ? 'Törlés...' : 'Elutasítás / törlés' }}
+                  </button>
+                </div>
               </div>
             </article>
           </div>

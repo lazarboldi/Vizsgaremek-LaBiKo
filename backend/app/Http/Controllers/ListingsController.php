@@ -17,7 +17,9 @@ class ListingsController extends Controller
      */
     public function index()
     {
-        $listings = Listings::with('user', 'car.images')->get();
+        $listings = Listings::with('user', 'car.images')
+            ->where('status', 'active')
+            ->get();
         return ListingsResource::collection($listings);
     }
 
@@ -39,7 +41,7 @@ class ListingsController extends Controller
             'car_id' => $request->validated('car_id'),
             'price' => $request->validated('price'),
             'horsepower' => $request->validated('horsepower'),
-            'status' => $request->validated('status') ?? 'active',
+            'status' => 'pending',
         ]);
         return new ListingsResource($listing->load(['user', 'car.images']));
     }
@@ -49,6 +51,22 @@ class ListingsController extends Controller
      */
     public function show(Listings $listing)
     {
+        if ($listing->status !== 'active') {
+            $user = Auth::guard('sanctum')->user() ?? Auth::user();
+
+            if (!$user instanceof User) {
+                return response()->json([
+                    'message' => 'A hirdetés még jóváhagyásra vár.'
+                ], 403);
+            }
+
+            if (!$user->isAdmin() && (int) $listing->user_id !== (int) $user->id) {
+                return response()->json([
+                    'message' => 'A hirdetés még jóváhagyásra vár.'
+                ], 403);
+            }
+        }
+
         return new ListingsResource($listing->load(['user', 'car.images', 'favouritedBy']));
     }
 

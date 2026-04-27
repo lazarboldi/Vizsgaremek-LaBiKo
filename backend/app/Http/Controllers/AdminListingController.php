@@ -13,9 +13,30 @@ class AdminListingController extends Controller
      */
     public function index()
     {
-        $listings = Listings::with(['user', 'car.images'])->latest()->get();
+        $listings = Listings::with(['user', 'car.images'])
+            ->orderByRaw("status = 'pending' DESC")
+            ->latest()
+            ->get();
 
         return ListingsResource::collection($listings);
+    }
+
+    /**
+     * Approve a pending advertisement as admin.
+     */
+    public function approve(Listings $listing)
+    {
+        if ($listing->status !== 'pending') {
+            return response()->json([
+                'message' => 'Csak jóváhagyásra váró hirdetés hagyható jóvá.'
+            ], 422);
+        }
+
+        $listing->update([
+            'status' => 'active',
+        ]);
+
+        return new ListingsResource($listing->load(['user', 'car.images']));
     }
 
     /**

@@ -10,7 +10,11 @@ const loadListingsFromStorage = () => {
   try {
     const stored = localStorage.getItem(LISTINGS_STORAGE_KEY)
     const parsed = stored ? JSON.parse(stored) : []
-    return Array.isArray(parsed) ? parsed : []
+    if (!Array.isArray(parsed)) {
+      return []
+    }
+
+    return parsed.filter(item => item?.status === 'active')
   } catch {
     return []
   }
@@ -37,7 +41,9 @@ export const useListing = defineStore('listings', () => {
   async function getListings() {
     const response = await api.get('listings')
     const fetched = response?.data?.data
-    listings.value = Array.isArray(fetched) ? fetched : []
+    listings.value = Array.isArray(fetched)
+      ? fetched.filter(item => item?.status === 'active')
+      : []
     saveListingsToStorage(listings.value)
   }
 
@@ -94,14 +100,17 @@ export const useListing = defineStore('listings', () => {
     const response = await api.post('listings', {
       car_id: carId,
       price: data.price,
-      horsepower: data.horsepower,
-      status: 'active'
+      horsepower: data.horsepower
     }, {
       headers: authHeaders
     })
 
     const newListing = response.data.data
-    listings.value.push(newListing)
+
+    if (newListing?.status === 'active') {
+      listings.value.push(newListing)
+    }
+
     saveListingsToStorage(listings.value)
     return newListing
   }
@@ -133,10 +142,22 @@ export const useListing = defineStore('listings', () => {
       return localListing
     }
 
-    const response = await api.get(`listings/${id}`)
+    const authStore = useAuthStore()
+    const token = authStore.token
+    const response = await api.get(`listings/${id}`, token
+      ? {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      : undefined)
     const listing = response?.data?.data || response?.data || null
 
     if (listing) {
+      if (listing?.status !== 'active') {
+        return listing
+      }
+
       const existingIndex = listings.value.findIndex(item => String(item.id) === String(listing.id))
 
       if (existingIndex >= 0) {

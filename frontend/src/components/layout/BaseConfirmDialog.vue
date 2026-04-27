@@ -65,7 +65,7 @@ const handleBackdropClick = (event) => {
           </button>
           <button
             type="button"
-            class="rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-700"
+            class="rounded-lg bg-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-700"
             @click="handleConfirm"
           >
             {{ props.confirmText }}

@@ -24,7 +24,7 @@ class UpdateListingsRequest extends FormRequest
         return [
             'price' => 'sometimes|integer|min:0',
             'horsepower' => 'sometimes|integer|min:1|max:3000',
-            'status' => 'sometimes|in:active,sold,archived',
+            'status' => 'sometimes|in:pending,active,sold,archived',
         ];
     }
 }

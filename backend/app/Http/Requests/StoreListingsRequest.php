@@ -25,7 +25,7 @@ class StoreListingsRequest extends FormRequest
             'car_id' => 'required|exists:cars,id',
             'price' => 'required|integer|min:0',
             'horsepower' => 'required|integer|min:1|max:3000',
-            'status' => 'nullable|in:active,sold,archived',
+            'status' => 'nullable|in:pending,active,sold,archived',
         ];
     }
 }

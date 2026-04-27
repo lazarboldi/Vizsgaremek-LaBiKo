@@ -69,18 +69,7 @@ const allCars = computed(() => {
     image_url: listing.car?.images?.[0]?.image_url || ''
   }))
 
-  const mappedCars = homeStore.cars.map(car => {
-    const relatedListing = newListingStore.listings.find(listing => String(listing.car?.id) === String(car.id))
-
-    return {
-      ...car,
-      description: truncateDescription(car.description),
-      horsepower: car.horsepower || car.horse_power || car.power || car.hp || '',
-      listingId: relatedListing?.id || null
-    }
-  }).filter(car => !car.listingId)
-
-  return [...mappedCars, ...mappedListings]
+  return mappedListings
 })
 
 const normalizeFilterOption = value => String(value ?? '').trim()
@@ -208,7 +197,6 @@ watch([
 
 onMounted(async () => {
   const requests = [
-    homeStore.getCars(),
     newListingStore.getListings()
   ]
 

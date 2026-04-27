@@ -48,6 +48,9 @@ Route::apiResource('interests', InterestController::class);
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('/listings', [AdminListingController::class, 'index'])
         ->name('admin.listings.index');
+    Route::patch('/listings/{listing}/approve', [AdminListingController::class, 'approve'])
+        ->whereNumber('listing')
+        ->name('admin.listings.approve');
     Route::delete('/listings/{listing}', [AdminListingController::class, 'destroy'])
         ->whereNumber('listing')
         ->name('admin.listings.destroy');

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useListing } from '@stores/NewListingStore.mjs'
 import { useAuthStore } from '@stores/AuthStore.mjs'
 import BaseLayout from '@layouts/BaseLayout.vue'
+import BaseConfirmDialog from '@components/layout/BaseConfirmDialog.vue'
 
 const router = useRouter()
 const listingStore = useListing()
@@ -29,6 +30,8 @@ const form = ref({
 const isLoading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const isApprovalDialogOpen = ref(false)
+const createdListingId = ref(null)
 
 onMounted(() => {
   if (!authStore.isAuthenticated) {
@@ -39,6 +42,18 @@ onMounted(() => {
 const handleImageUpload = (event) => {
   const files = Array.from(event.target.files)
   form.value.images = files
+}
+
+const closeApprovalDialog = () => {
+  isApprovalDialogOpen.value = false
+}
+
+const handleApprovalDialogConfirm = async () => {
+  isApprovalDialogOpen.value = false
+
+  if (createdListingId.value) {
+    await router.push(`/listing/${createdListingId.value}`)
+  }
 }
 
 const handleSubmit = async () => {
@@ -96,7 +111,8 @@ const handleSubmit = async () => {
       images: []
     }
 
-    await router.push(`/listing/${createdListing.id}`)
+    createdListingId.value = createdListing.id
+    isApprovalDialogOpen.value = true
   } catch (error) {
     const validationErrors = error.response?.data?.errors
     const firstValidationError = validationErrors
@@ -369,6 +385,15 @@ const handleSubmit = async () => {
         </section>
       </main>
     </div>
+    <BaseConfirmDialog
+      v-model="isApprovalDialogOpen"
+      title="Hirdetés rögzítve"
+      message="A hirdetésed létrejött, de megjelenéséhez Admin jóváhagyása szükséges."
+      confirm-text="Rendben"
+      cancel-text="Bezárás"
+      @cancel="closeApprovalDialog"
+      @confirm="handleApprovalDialogConfirm"
+    />
   </BaseLayout>
 </template>
 
