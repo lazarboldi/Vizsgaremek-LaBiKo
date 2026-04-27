@@ -191,33 +191,20 @@ onMounted(async () => {
         <section v-else-if="listing" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_minmax(0,1fr)]">
           <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-lg">
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-              <a
-                :href="coverPhoto"
-                :data-lightbox="`listing-${listingId}`"
-                :data-title="listingTitle"
-                class="block"
-              >
-                <img
-                  :src="coverPhoto"
-                  :alt="listingTitle"
-                  class="block h-[320px] w-full object-cover md:h-[420px]"
-                />
-              </a>
-              <a
-                v-for="(photo, index) in photos"
-                :key="`lightbox-photo-${index}`"
-                :href="photo"
-                :data-lightbox="`listing-${listingId}`"
-                :data-title="`${listingTitle} ${index + 1}`"
-                class="hidden"
+              <img
+                :src="coverPhoto"
+                :alt="listingTitle"
+                class="block h-[320px] w-full object-cover md:h-[420px]"
               />
             </div>
             <div v-if="photos.length > 1" class="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
-              <button
+              <a
                 v-for="(photo, index) in photos"
                 :key="`${photo}-${index}`"
-                type="button"
-                class="overflow-hidden rounded-lg border-2 transition"
+                :href="photo"
+                :data-lightbox="`listing-${listingId}`"
+                :data-title="`${listingTitle} ${index + 1}`"
+                class="overflow-hidden rounded-lg border-2 transition cursor-zoom-in"
                 :class="photo === coverPhoto ? 'border-orange-500' : 'border-slate-200 hover:border-slate-300'"
                 @click="selectedPhoto = photo"
               >
@@ -226,7 +213,7 @@ onMounted(async () => {
                   :alt="`${listingTitle} ${index + 1}`"
                   class="h-20 w-full object-cover"
                 />
-              </button>
+              </a>
             </div>
           </article>
           <article class="space-y-6">
