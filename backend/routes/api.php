@@ -10,6 +10,7 @@ use App\Http\Controllers\CarimageController;
 use App\Http\Controllers\ListingsController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\AdminListingController;
+use App\Http\Controllers\FavouritesController;
 
 
 Route::post('/registration', [RegistrationController::class, 'registration'])
@@ -25,6 +26,15 @@ Route::post('/login', [AuthController::class, 'authenticate'])
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/me', [UserController::class, 'me'])
         ->name('users.me');
+
+    Route::get('/favourites', [FavouritesController::class, 'index'])
+        ->name('favourites.index');
+    Route::post('/favourites/{listing}', [FavouritesController::class, 'store'])
+        ->whereNumber('listing')
+        ->name('favourites.store');
+    Route::delete('/favourites/{listing}', [FavouritesController::class, 'destroy'])
+        ->whereNumber('listing')
+        ->name('favourites.destroy');
 });
 
 Route::apiResource('listings', ListingsController::class);

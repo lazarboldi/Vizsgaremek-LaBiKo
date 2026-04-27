@@ -2,49 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreFavouritesRequest;
-use App\Http\Requests\UpdateFavouritesRequest;
-use App\Models\Favourites;
+use App\Http\Resources\ListingsResource;
+use App\Models\Listings;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class FavouritesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+
+        if (!$user instanceof User) {
+            return response()->json([
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
+        $favourites = $user
+            ->favourites()
+            ->with(['user', 'car.images'])
+            ->latest('favourites.created_at')
+            ->get();
+
+        return ListingsResource::collection($favourites);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreFavouritesRequest $request)
+    public function store(Request $request, Listings $listing)
     {
-        //
+        $user = $request->user();
+
+        if (!$user instanceof User) {
+            return response()->json([
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
+        $user->favourites()->syncWithoutDetaching([$listing->id]);
+
+        return response()->json([
+            'message' => 'A hirdetés hozzáadva a gyűjteményhez.'
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Favourites $favourites)
+    public function destroy(Request $request, Listings $listing)
     {
-        //
-    }
+        $user = $request->user();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateFavouritesRequest $request, Favourites $favourites)
-    {
-        //
-    }
+        if (!$user instanceof User) {
+            return response()->json([
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Favourites $favourites)
-    {
-        //
+        $user->favourites()->detach($listing->id);
+
+        return response()->noContent();
     }
 }
