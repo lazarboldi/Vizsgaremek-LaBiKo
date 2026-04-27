@@ -84,7 +84,6 @@ class DatabaseSeeder extends Seeder
                     'https://i.imgur.com/5jGNj02.jpeg',
                     'https://i.imgur.com/IhCbIxn.jpeg',
                     'https://i.imgur.com/Z421uiX.jpeg',
-                    'https://i.imgur.com/Oprldb6.jpeg',
                 ],
             ],
             [
@@ -479,6 +478,56 @@ class DatabaseSeeder extends Seeder
                     'https://i.imgur.com/kWcOkHi.jpeg',
                     'https://i.imgur.com/vVHi6oq.jpeg',
                     'https://i.imgur.com/UaRSuG9.jpeg',
+                ],
+            ],
+
+            [
+                'car' => [
+                    'brand' => 'Volkswagen',
+                    'model' => 'Golf 3',
+                    'color' => 'Kék',
+                    'description' => 'Alig használt serülésmentes, kölcségmentes én javítottam, gyári fényezés. Full extrás (tetőablak), nagy zene, vontató kötél, koppanás mentes futómű, női tulaj nem dohányzó. Ebben érzed a G-ket. Alku NINCS. Teszt pilóták kíméljenek!',
+                    'year' => 1997,
+                    'mileage' => 523000,
+                    'fuel_type' => 'Dízel',
+                    'transmission' => 'Manuális',
+                    'engine_size' => 1900,
+                    'body_type' => 'Ferdehátú',
+                    'horsepower' => 67,
+                ],
+                'listing' => [
+                    'price' => 670000,
+                    'status' => 'active',
+                ],
+                'photos' => [
+                    'https://i.imgur.com/EbIDpQJ.jpeg',
+                    'https://i.imgur.com/VERK0ta.png',
+                    'https://i.imgur.com/pegQzz1.jpeg',
+                ],
+            ],
+
+            [
+                'car' => [
+                    'brand' => 'Seat',
+                    'model' => 'Leon',
+                    'color' => 'Szürke',
+                    'description' => '1.9 TDI a legendás motor. Napi használatban van. Turbó fix nyomáson megy, állandó SPORT MÓD.',
+                    'year' => 2001,
+                    'mileage' => 270000,
+                    'fuel_type' => 'Dízel',
+                    'transmission' => 'Manuális',
+                    'engine_size' => 1900,
+                    'body_type' => 'Ferdehátú',
+                    'horsepower' => 110,
+                ],
+                'listing' => [
+                    'price' => 767000,
+                    'status' => 'active',
+                ],
+                'photos' => [
+                    'https://i.imgur.com/V8RLvqo.jpeg',
+                    'https://i.imgur.com/By494BD.jpeg',
+                    'https://i.imgur.com/tldXHRG.jpeg',
                 ],
             ],
         ];
