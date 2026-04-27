@@ -22,7 +22,7 @@ const isFavouriteUpdating = ref(false)
 
 const listingId = computed(() => props.car?.listingId)
 const hasListing = computed(() => Boolean(listingId.value))
-const isFavourite = computed(() => hasListing.value && favouritesStore.isFavourite(listingId.value))
+const isFavourite = computed(() => isAuthenticated.value && hasListing.value && favouritesStore.isFavourite(listingId.value))
 
 const favouriteButtonLabel = computed(() => {
   if (!hasListing.value) {
