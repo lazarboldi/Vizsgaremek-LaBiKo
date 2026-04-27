@@ -73,8 +73,14 @@ export const useAuthStore = defineStore('auth', {
         this.userName = usernameFromFullName(this.registerForm.name)
         this.successMessage = data?.message ?? 'Sikeres regisztracio.'
         this.registerForm = defaultRegisterForm()
-      } catch {
-        this.errorMessage = 'Sikertelen regisztracio.'
+      } catch (error) {
+        const validationErrors = error.response?.data?.errors
+        const phoneError = validationErrors?.phone?.[0]
+        const firstValidationError = validationErrors
+          ? Object.values(validationErrors)[0]?.[0]
+          : null
+
+        this.errorMessage = phoneError || firstValidationError || 'Sikertelen regisztracio.'
       } finally {
         this.loading = false
       }

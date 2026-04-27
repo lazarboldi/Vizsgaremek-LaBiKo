@@ -40,7 +40,7 @@ const submit = async () => {
                   v-model="registerForm.name"
                   type="text"
                   class="w-full border-0 bg-transparent p-0 text-sm text-slate-800 outline-none"
-                  placeholder="Teljes neved"
+                  placeholder="Teljes neve"
                   required
                 />
               </div>
