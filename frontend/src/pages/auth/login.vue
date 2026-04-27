@@ -26,16 +26,16 @@ const submit = async () => {
 
 <template>
   <BaseLayout>
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 text-slate-800">
+    <div class="self-center text-slate-800">
       <main class="mx-auto max-w-[680px] px-4 py-8 md:px-6">
         <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h1 class="m-0 text-3xl font-extrabold text-slate-800">Bejelentkezés</h1>
           <p class="mt-3 mb-0 text-slate-600">
-            Jelentkezz be a fiókodba.
+            Jelentkezzen be a fiókjába.
           </p>
           <template v-if="isAuthenticated">
             <p class="mt-4 mb-0 rounded-lg bg-green-100 px-3 py-2 text-sm font-bold text-green-700">
-              Már be vagy jelentkezve.
+              Már be van jelentkezve.
             </p>
             <RouterLink
               to="/"
@@ -44,7 +44,7 @@ const submit = async () => {
               Vissza a főoldalra
             </RouterLink>
           </template>
-          <form v-else class="space-y-4" @submit.prevent="submit">
+          <form v-else class="mt-7 space-y-4" @submit.prevent="submit">
             <label class="block">
               <span class="mb-1 block text-sm font-bold text-slate-700">Email</span>
               <div class="rounded-lg border border-slate-300 bg-white px-3 py-2">
@@ -84,9 +84,9 @@ const submit = async () => {
             </button>
           </form>
           <p class="mt-4 mb-0 text-sm text-slate-600">
-            Nincs még fiókod?
+            Nincs még fiókja?
             <RouterLink to="/auth/register" class="font-bold text-orange-600 no-underline hover:text-orange-700">
-              Regisztrálj itt
+              Regisztráljon itt
             </RouterLink>
           </p>
         </section>

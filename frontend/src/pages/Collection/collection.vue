@@ -56,7 +56,7 @@ onMounted(async () => {
       <main class="mx-auto max-w-[1320px] px-4 pt-6 pb-10 md:px-6">
         <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
           <h1 class="m-0 text-[clamp(1.8rem,2.4vw,2.8rem)] font-extrabold text-slate-800">Gyűjtemény</h1>
-          <p class="mt-2 mb-6 text-slate-600">Itt találod az általad elmentett hirdetéseket.</p>
+          <p class="mt-2 mb-6 text-slate-600">Itt találja az általa elmentett hirdetéseket.</p>
 
           <p v-if="favouritesStore.errorMessage" class="mb-5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">
             {{ favouritesStore.errorMessage }}
@@ -67,7 +67,7 @@ onMounted(async () => {
           </div>
 
           <div v-else-if="favouriteCars.length === 0" class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600">
-            Még nincs mentett hirdetésed.
+            Még nincs mentett hirdetése.
           </div>
 
           <div v-else class="grid grid-cols-1 gap-5 xl:grid-cols-2">

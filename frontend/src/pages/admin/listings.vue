@@ -156,7 +156,7 @@ onMounted(async () => {
       <main class="mx-auto max-w-[1320px] px-4 pt-6 pb-10 md:px-6">
         <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
           <h1 class="m-0 text-[clamp(1.8rem,2.4vw,2.8rem)] font-extrabold text-slate-800">Admin hirdetéskezelés</h1>
-          <p class="mt-2 mb-6 text-slate-600">Itt az összes hirdetést megtekintheted, a várakozókat jóváhagyhatod, és kezelheted.</p>
+          <p class="mt-2 mb-6 text-slate-600">Itt az összes hirdetést megtekintheti, a várakozókat jóváhagyhatja, és kezelheti.</p>
           <p v-if="errorMessage" class="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">
             {{ errorMessage }}
           </p>
@@ -207,7 +207,11 @@ onMounted(async () => {
                     :disabled="deletingListingId === listing.id || Boolean(approvingListingId)"
                     @click="openDeleteDialog(listing.id)"
                   >
-                    {{ deletingListingId === listing.id ? 'Törlés...' : 'Elutasítás / törlés' }}
+                    {{
+                      deletingListingId === listing.id
+                        ? (listing.status === 'pending' ? 'Elutasítás...' : 'Törlés...')
+                        : (listing.status === 'pending' ? 'Elutasítás' : 'Törlés')
+                    }}
                   </button>
                 </div>
               </div>
@@ -219,8 +223,9 @@ onMounted(async () => {
     <BaseConfirmDialog
       v-model="isDeleteDialogOpen"
       title="Hirdetés törlése"
-      message="Biztosan törölni szeretnéd ezt a hirdetést? Ez a művelet nem vonható vissza."
+      message="Biztosan törölni szeretné ezt a hirdetést? Ez a művelet nem vonható vissza."
       confirm-text="Igen, törlöm"
+      confirm-variant="danger"
       cancel-text="Mégse"
       @cancel="closeDeleteDialog"
       @confirm="deleteListing"
