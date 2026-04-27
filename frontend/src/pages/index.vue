@@ -133,6 +133,8 @@ const getCarFilterValue = (car, filterId) => {
   }
 }
 
+const isMaxFilter = filterId => filterId === 'year' || filterId === 'price'
+
 const resetFilters = () => {
   Object.keys(selectedFilters.value).forEach((filterId) => {
     selectedFilters.value[filterId] = ''
@@ -146,6 +148,13 @@ const filteredCars = computed(() => {
 
       if (!selected) {
         return true
+      }
+
+      if (isMaxFilter(filterId)) {
+        const selectedMax = parseNumericValue(selected)
+        const currentNumber = parseNumericValue(getCarFilterValue(car, filterId))
+
+        return currentNumber <= selectedMax
       }
 
       const currentValue = String(getCarFilterValue(car, filterId) || '').trim().toLowerCase()
@@ -229,7 +238,16 @@ onMounted(async () => {
               class="block"
             >
               <span class="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-500">{{ filter.label }}</span>
+              <input
+                v-if="filter.id === 'year' || filter.id === 'price'"
+                v-model="selectedFilters[filter.id]"
+                type="text"
+                inputmode="numeric"
+                :placeholder="filter.id === 'year' ? 'Pl.: 2018 (max)' : 'Pl.: 6500000 (max)'"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
+              />
               <select
+                v-else
                 v-model="selectedFilters[filter.id]"
                 class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
               >
