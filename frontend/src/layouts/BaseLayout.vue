@@ -4,11 +4,9 @@ import BaseHeader from '@components/layout/BaseHeader.vue'
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
     <BaseHeader />
-    <main class="container mx-auto">
+    <main class="flex-1 grid container mx-auto">
       <slot />
     </main>
     <BaseFooter />
-  </div>
 </template>

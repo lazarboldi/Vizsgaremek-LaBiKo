@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -16,6 +18,10 @@ const props = defineProps({
     type: String,
     default: 'Igen'
   },
+  confirmVariant: {
+    type: String,
+    default: 'warning'
+  },
   cancelText: {
     type: String,
     default: 'Mégse'
@@ -32,6 +38,14 @@ const closeDialog = () => {
 const handleConfirm = () => {
   emit('confirm')
 }
+
+const confirmButtonClass = computed(() => {
+  if (props.confirmVariant === 'danger') {
+    return 'rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-700'
+  }
+
+  return 'rounded-lg bg-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-700'
+})
 
 const handleBackdropClick = (event) => {
   if (event.target === event.currentTarget) {
@@ -65,7 +79,7 @@ const handleBackdropClick = (event) => {
           </button>
           <button
             type="button"
-            class="rounded-lg bg-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-700"
+            :class="confirmButtonClass"
             @click="handleConfirm"
           >
             {{ props.confirmText }}
