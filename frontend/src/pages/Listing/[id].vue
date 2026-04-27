@@ -1,20 +1,28 @@
 <script setup>
+import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import lightbox from 'lightbox2'
 import 'lightbox2/dist/css/lightbox.css'
 
 import BaseLayout from '@layouts/BaseLayout.vue'
+import { useAuthStore } from '@stores/AuthStore.mjs'
+import { useFavouritesStore } from '@stores/FavouritesStore.mjs'
 import { useListing } from '@stores/NewListingStore.mjs'
 import carBlueImage from '@assets/images/home/car-blue.jpg'
 
 const route = useRoute()
+const router = useRouter()
 const listingStore = useListing()
+const authStore = useAuthStore()
+const favouritesStore = useFavouritesStore()
+const { isAuthenticated } = storeToRefs(authStore)
 
 const loading = ref(true)
 const errorMessage = ref('')
 const listing = ref(null)
 const selectedPhoto = ref('')
+const isFavouriteUpdating = ref(false)
 
 const backendOrigin = import.meta.env.VITE_BACKEND_URL?.replace(/\/api\/?$/, '/')
 
@@ -64,6 +72,16 @@ const listingTitle = computed(() => {
 
 const sellerEmail = computed(() => (listing.value?.user?.email || '').trim())
 const sellerPhone = computed(() => (listing.value?.user?.phone || '').trim())
+const currentListingId = computed(() => listing.value?.id)
+const isFavourite = computed(() => isAuthenticated.value && currentListingId.value && favouritesStore.isFavourite(currentListingId.value))
+
+const favouriteButtonLabel = computed(() => {
+  if (!currentListingId.value) {
+    return ''
+  }
+
+  return isFavourite.value ? 'Eltávolítás a gyűjteményből' : 'Felvétel a gyűjteménybe'
+})
 
 const formatPrice = (value) => {
   const numeric = Number(value)
@@ -95,6 +113,27 @@ const formatHorsepower = (value) => {
   return `${new Intl.NumberFormat('hu-HU').format(numeric)} LE`
 }
 
+const toggleFavourite = async () => {
+  if (!currentListingId.value || isFavouriteUpdating.value) {
+    return
+  }
+
+  if (!isAuthenticated.value) {
+    const redirect = encodeURIComponent(route.fullPath || '/')
+    await router.push(`/auth/login?redirect=${redirect}`)
+    return
+  }
+
+  isFavouriteUpdating.value = true
+
+  try {
+    await favouritesStore.toggleFavourite(currentListingId.value)
+  } catch {
+  } finally {
+    isFavouriteUpdating.value = false
+  }
+}
+
 onMounted(async () => {
   lightbox.option({
     resizeDuration: 200,
@@ -119,6 +158,11 @@ onMounted(async () => {
     }
 
     listing.value = found
+
+    if (authStore.isAuthenticated) {
+      await favouritesStore.loadFavourites()
+    }
+
     selectedPhoto.value = photos.value[0] || ''
   } catch (error) {
     errorMessage.value = error.response?.data?.message || error.message || 'Nem sikerült betölteni a hirdetést.'
@@ -192,6 +236,15 @@ onMounted(async () => {
                 {{ listingTitle }}
               </h1>
               <p class="mt-3 text-3xl font-extrabold text-slate-900">{{ formatPrice(listing.price) }}</p>
+              <button
+                type="button"
+                class="mt-4 inline-flex w-full items-center justify-center rounded-lg border px-4 py-2.5 text-sm font-bold transition sm:w-auto"
+                :class="isFavourite ? 'border-red-500 bg-red-500 text-white hover:bg-red-600' : 'border-orange-500 bg-orange-500 text-white hover:bg-orange-600'"
+                :disabled="isFavouriteUpdating"
+                @click="toggleFavourite"
+              >
+                {{ isFavouriteUpdating ? 'Feldolgozás...' : favouriteButtonLabel }}
+              </button>
               <dl class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                   <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Évjárat</dt>
