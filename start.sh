@@ -23,7 +23,7 @@ docker compose exec backend composer install
 
 docker compose exec backend php artisan migrate 
 
-docker compose exec backend storage:link
+docker compose exec backend php artisan storage:link
 
 if [ -z "${APP_KEY}" ]; then
     docker compose exec backend php artisan key:generate
