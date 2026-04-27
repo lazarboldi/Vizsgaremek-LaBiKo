@@ -1,5 +1,10 @@
 <script setup>
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import carBlueImage from '@assets/images/home/car-blue.jpg'
+import { useAuthStore } from '@stores/AuthStore.mjs'
+import { useFavouritesStore } from '@stores/FavouritesStore.mjs'
 
 const props = defineProps({
   car: {
@@ -7,6 +12,49 @@ const props = defineProps({
     required: true
   }
 })
+
+const router = useRouter()
+const route = useRoute()
+const authStore = useAuthStore()
+const favouritesStore = useFavouritesStore()
+const { isAuthenticated } = storeToRefs(authStore)
+const isFavouriteUpdating = ref(false)
+
+const listingId = computed(() => props.car?.listingId)
+const hasListing = computed(() => Boolean(listingId.value))
+const isFavourite = computed(() => hasListing.value && favouritesStore.isFavourite(listingId.value))
+
+const favouriteButtonLabel = computed(() => {
+  if (!hasListing.value) {
+    return ''
+  }
+
+  return isFavourite.value ? 'Eltávolítás a gyűjteményből' : 'Felvétel a gyűjteménybe'
+})
+
+const toggleFavourite = async (event) => {
+  event.preventDefault()
+  event.stopPropagation()
+
+  if (!hasListing.value || isFavouriteUpdating.value) {
+    return
+  }
+
+  if (!isAuthenticated.value) {
+    const redirect = encodeURIComponent(route.fullPath || '/')
+    await router.push(`/auth/login?redirect=${redirect}`)
+    return
+  }
+
+  isFavouriteUpdating.value = true
+
+  try {
+    await favouritesStore.toggleFavourite(listingId.value)
+  } catch {
+  } finally {
+    isFavouriteUpdating.value = false
+  }
+}
 
 const formatPrice = (value) => {
   const numeric = Number(value)
@@ -107,6 +155,15 @@ const resolveImageUrl = (url) => {
             {{ formatPrice(props.car.price) }}
           </p>
         </div>
+        <button
+          type="button"
+          class="mt-4 inline-flex w-full items-center justify-center rounded-lg border px-4 py-2.5 text-sm font-bold transition"
+          :class="isFavourite ? 'border-red-500 bg-red-500 text-white hover:bg-red-600' : 'border-orange-500 bg-orange-500 text-white hover:bg-orange-600'"
+          :disabled="isFavouriteUpdating"
+          @click="toggleFavourite"
+        >
+          {{ isFavouriteUpdating ? 'Feldolgozás...' : favouriteButtonLabel }}
+        </button>
       </div>
     </article>
   </RouterLink>
