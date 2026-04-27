@@ -5,9 +5,13 @@ import BaseCard from '@components/layout/BaseCard.vue'
 import BaseLayout from '@layouts/BaseLayout.vue'
 import { useListingStore } from '@stores/ListingStore.mjs'
 import { useListing } from '@stores/NewListingStore.mjs'
+import { useAuthStore } from '@stores/AuthStore.mjs'
+import { useFavouritesStore } from '@stores/FavouritesStore.mjs'
 
 const homeStore = useListingStore()
 const newListingStore = useListing()
+const authStore = useAuthStore()
+const favouritesStore = useFavouritesStore()
 const selectedFilters = ref({
   brand: '',
   model: '',
@@ -194,10 +198,16 @@ watch([
 })
 
 onMounted(async () => {
-  await Promise.all([
+  const requests = [
     homeStore.getCars(),
     newListingStore.getListings()
-  ])
+  ]
+
+  if (authStore.isAuthenticated) {
+    requests.push(favouritesStore.loadFavourites())
+  }
+
+  await Promise.all(requests)
 })
 </script>
 
