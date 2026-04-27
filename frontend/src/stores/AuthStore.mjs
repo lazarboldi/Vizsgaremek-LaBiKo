@@ -30,6 +30,9 @@ export const useAuthStore = defineStore('auth', {
     loginForm: defaultLoginForm(),
     registerForm: defaultRegisterForm()
   }),
+  persist: {
+    pick: ['token', 'userName', 'userRole']
+  },
   getters: {
     isAuthenticated(state) {
       return state.token !== null && state.token !== ''

@@ -56,6 +56,16 @@ const handleApprovalDialogConfirm = async () => {
   }
 }
 
+const preventNegativeValue = (field) => {
+  const raw = String(form.value[field] ?? '')
+
+  if (!raw || !raw.includes('-')) {
+    return
+  }
+
+  form.value[field] = raw.replace(/-/g, '')
+}
+
 const handleSubmit = async () => {
   if (isLoading.value) {
     return
@@ -81,6 +91,15 @@ const handleSubmit = async () => {
       !form.value.engineSize
     ) {
       errorMessage.value = 'Kérjük, töltse ki a kötelező mezőket!'
+      isLoading.value = false
+      return
+    }
+
+    const numericFields = ['year', 'horsepower', 'price', 'engineSize', 'mileage']
+    const hasNegativeValue = numericFields.some(field => Number(form.value[field]) < 0)
+
+    if (hasNegativeValue) {
+      errorMessage.value = 'A szám mezőkben nem adhatsz meg negatív értéket!'
       isLoading.value = false
       return
     }
@@ -200,8 +219,10 @@ const handleSubmit = async () => {
                     id="year"
                     v-model="form.year"
                     type="number"
+                    min="0"
                     placeholder="pl. 2020"
                     required
+                    @input="preventNegativeValue('year')"
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -213,9 +234,10 @@ const handleSubmit = async () => {
                     id="horsepower"
                     v-model="form.horsepower"
                     type="number"
-                    min="1"
+                    min="0"
                     required
                     placeholder="pl. 150"
+                    @input="preventNegativeValue('horsepower')"
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -227,8 +249,10 @@ const handleSubmit = async () => {
                     id="price"
                     v-model="form.price"
                     type="number"
+                    min="0"
                     required
                     placeholder="pl. 1000000"
+                    @input="preventNegativeValue('price')"
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -292,8 +316,10 @@ const handleSubmit = async () => {
                     id="mileage"
                     v-model="form.mileage"
                     type="number"
+                    min="0"
                     placeholder="pl. 150000"
                     required
+                    @input="preventNegativeValue('mileage')"
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -337,8 +363,10 @@ const handleSubmit = async () => {
                     id="engineSize"
                     v-model="form.engineSize"
                     type="number"
+                    min="0"
                     placeholder="pl. 2000"
                     required
+                    @input="preventNegativeValue('engineSize')"
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -398,7 +426,7 @@ const handleSubmit = async () => {
     <BaseConfirmDialog
       v-model="isApprovalDialogOpen"
       title="Hirdetés rögzítve"
-      message="A hirdetésed létrejött, de megjelenéséhez Admin jóváhagyása szükséges."
+      message="A hirdetése létrejött, de megjelenéséhez Admin jóváhagyása szükséges."
       confirm-text="Rendben"
       cancel-text="Bezárás"
       @cancel="closeApprovalDialog"
