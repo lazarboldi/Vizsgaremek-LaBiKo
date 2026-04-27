@@ -221,6 +221,10 @@ onMounted(async () => {
                   <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Karosszéria</dt>
                   <dd class="mt-1 text-base font-semibold text-slate-800">{{ listing.car?.body_type || 'Nincs megadva' }}</dd>
                 </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <dt class="text-xs font-bold uppercase tracking-wide text-slate-500">Szín</dt>
+                  <dd class="mt-1 text-base font-semibold text-slate-800">{{ listing.car?.color || 'Nincs megadva' }}</dd>
+                </div>
               </dl>
             </div>
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
