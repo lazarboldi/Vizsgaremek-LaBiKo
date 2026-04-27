@@ -149,7 +149,7 @@ const handleSubmit = async () => {
               <!-- cím -->
               <div>
                 <label for="title" class="block text-sm font-semibold text-slate-700 mb-2">
-                  Hirdetés címe <span class="text-red-500">*</span>
+                  Hirdetés címe 
                 </label>
                 <input
                   id="title"
@@ -171,6 +171,7 @@ const handleSubmit = async () => {
                     v-model="form.brand"
                     type="text"
                     placeholder="pl. BMW"
+                    required
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -184,6 +185,7 @@ const handleSubmit = async () => {
                     v-model="form.model"
                     type="text"
                     placeholder="pl. 320D"
+                    required
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -199,12 +201,13 @@ const handleSubmit = async () => {
                     v-model="form.year"
                     type="number"
                     placeholder="pl. 2020"
+                    required
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
                 <div>
                   <label for="horsepower" class="block text-sm font-semibold text-slate-700 mb-2">
-                    Lóerő <span class="text-red-500">*</span>
+                    Lóerő 
                   </label>
                   <input
                     id="horsepower"
@@ -218,7 +221,7 @@ const handleSubmit = async () => {
                 </div>
                 <div>
                   <label for="price" class="block text-sm font-semibold text-slate-700 mb-2">
-                    Ár <span class="text-red-500">*</span>
+                    Ár 
                   </label>
                   <input
                     id="price"
@@ -238,6 +241,7 @@ const handleSubmit = async () => {
                   </label>
                   <select
                     id="fuelType"
+                    required
                     v-model="form.fuelType"
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   >
@@ -254,6 +258,7 @@ const handleSubmit = async () => {
                   </label>
                   <select
                     id="bodyType"
+                    required
                     v-model="form.bodyType"
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   >
@@ -272,6 +277,7 @@ const handleSubmit = async () => {
                     <option value="mopedauto">Mopedautó</option>
                     <option value="sport">Sport</option>
                     <option value="crossover">Crossover</option>
+
     
                   </select>
                 </div>
@@ -287,6 +293,7 @@ const handleSubmit = async () => {
                     v-model="form.mileage"
                     type="number"
                     placeholder="pl. 150000"
+                    required
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -296,6 +303,7 @@ const handleSubmit = async () => {
                   </label>
                   <select
                     id="transmission"
+                    required
                     v-model="form.transmission"
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   >
@@ -317,6 +325,7 @@ const handleSubmit = async () => {
                     v-model="form.color"
                     type="text"
                     placeholder="pl. Fekete"
+                    required
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -329,6 +338,7 @@ const handleSubmit = async () => {
                     v-model="form.engineSize"
                     type="number"
                     placeholder="pl. 2000"
+                    required
                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
                 </div>
@@ -353,7 +363,7 @@ const handleSubmit = async () => {
               <!-- leírás -->
               <div>
                 <label for="description" class="block text-sm font-semibold text-slate-700 mb-2">
-                  Leírás <span class="text-red-500">*</span>
+                  Leírás
                 </label>
                 <textarea
                   id="description"
