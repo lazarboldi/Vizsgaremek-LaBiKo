@@ -404,6 +404,12 @@ const handleSubmit = async () => {
               </div>
               <!-- gombok -->
               <div class="flex gap-4 pt-4">
+                <RouterLink
+                  to="/"
+                  class="flex-1 rounded-lg border-2 border-slate-300 px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 transition-colors no-underline text-center"
+                >
+                  Mégse
+                </RouterLink>
                 <button
                   type="submit"
                   :disabled="isLoading"
@@ -411,12 +417,6 @@ const handleSubmit = async () => {
                 >
                   {{ isLoading ? 'Feldolgozás...' : 'Hirdetés létrehozása' }}
                 </button>
-                <RouterLink
-                  to="/"
-                  class="flex-1 rounded-lg border-2 border-slate-300 px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 transition-colors no-underline text-center"
-                >
-                  Mégse
-                </RouterLink>
               </div>
             </form>
           </div>
