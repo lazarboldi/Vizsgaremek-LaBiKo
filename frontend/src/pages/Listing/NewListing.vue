@@ -76,7 +76,7 @@ const handleSubmit = async () => {
       throw new Error('Nem sikerült betölteni az új hirdetés azonosítóját.')
     }
 
-    successMessage.value = 'Hírdetés sikeresen létrehozva!'
+    successMessage.value = 'Hirdetés sikeresen létrehozva!'
     
     // form "lenullázása"
     form.value = {
@@ -102,7 +102,7 @@ const handleSubmit = async () => {
     const firstValidationError = validationErrors
       ? Object.values(validationErrors)[0]?.[0]
       : null
-    errorMessage.value = firstValidationError || error.response?.data?.message || error.message || 'Hiba a hírdetés létrehozásakor!'
+    errorMessage.value = firstValidationError || error.response?.data?.message || error.message || 'Hiba a hirdetés létrehozásakor!'
     console.error(error)
   } finally {
     isLoading.value = false
@@ -115,7 +115,7 @@ const handleSubmit = async () => {
     <div class="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 text-slate-800">
       <main class="mx-auto max-w-[1320px] px-4 pt-6 pb-10 md:px-6 flex justify-center">
         <section class="w-full">
-          <h1 class="text-[clamp(2rem,2.5vw,3rem)] mb-3 font-extrabold text-slate-800 text-center">Új hírdetés létrehozása</h1>
+          <h1 class="text-[clamp(2rem,2.5vw,3rem)] mb-3 font-extrabold text-slate-800 text-center">Új hirdetés létrehozása</h1>
           <div class="rounded-2xl border border-slate-200 bg-white shadow-lg p-8 max-w-2xl mx-auto">
             <div
               v-if="successMessage"
@@ -133,7 +133,7 @@ const handleSubmit = async () => {
               <!-- cím -->
               <div>
                 <label for="title" class="block text-sm font-semibold text-slate-700 mb-2">
-                  Hírdetés címe <span class="text-red-500">*</span>
+                  Hirdetés címe <span class="text-red-500">*</span>
                 </label>
                 <input
                   id="title"
@@ -264,7 +264,7 @@ const handleSubmit = async () => {
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label for="mileage" class="block text-sm font-semibold text-slate-700 mb-2">
-                    Kilóméteróra állás
+                    Kilométeróra állás
                   </label>
                   <input
                     id="mileage"
@@ -355,7 +355,7 @@ const handleSubmit = async () => {
                   :disabled="isLoading"
                   class="flex-1 rounded-lg bg-orange-500 px-6 py-3 text-base font-bold text-white shadow-md hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {{ isLoading ? 'Feldolgozás...' : 'Hírdetés létrehozása' }}
+                  {{ isLoading ? 'Feldolgozás...' : 'Hirdetés létrehozása' }}
                 </button>
                 <RouterLink
                   to="/"
@@ -376,7 +376,7 @@ const handleSubmit = async () => {
 name: listings.create
 path: /listing/new
 meta:
-  title: Új hírdetés létrehozása
+  title: Új hirdetés létrehozása
 </route>
 
 

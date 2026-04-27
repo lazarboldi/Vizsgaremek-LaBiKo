@@ -7,7 +7,7 @@ import { useAuthStore } from '@stores/AuthStore.mjs'
 
 const baseNavigationItems = [
   { label: 'Gyűjtemény', route: '/collection' },
-  { label: 'Új hírdetés', route: '/listing/new', isActive: false }
+  { label: 'Új hirdetés', route: '/listing/new', isActive: false }
 ]
 
 const isMenuOpen = ref(false)
