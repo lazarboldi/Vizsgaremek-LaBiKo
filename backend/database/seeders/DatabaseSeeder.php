@@ -40,23 +40,26 @@ class DatabaseSeeder extends Seeder
             [
                 'car' => [
                     'brand' => 'Opel',
-                    'model' => 'H-Astra Tourer',
+                    'model' => 'H-Astra Twinport',
                     'color' => 'Szürke',
                     'description' => 'Megkímélt, szervizelt autó, családi használatra kiváló állapotban.',
                     'year' => 2006,
-                    'mileage' => 142000,
+                    'mileage' => 242536,
                     'fuel_type' => 'Benzin',
                     'transmission' => 'Manuális',
-                    'engine_size' => 1600,
+                    'engine_size' => 1598,
                     'body_type' => 'Kombi',
-                    'horsepower' => 90,
+                    'horsepower' => 104,
                 ],
                 'listing' => [
-                    'price' => 1,
+                    'price' => 1326767,
                     'status' => 'active',
                 ],
                 'photos' => [
-
+                    'https://i.imgur.com/sfSmfxU.jpeg',
+                    'https://i.imgur.com/aEhwzSm.jpeg',
+                    'https://i.imgur.com/af6EyKS.jpeg',
+                    'https://i.imgur.com/Oprldb6.jpeg',
                 ],
             ],
             [
@@ -81,6 +84,7 @@ class DatabaseSeeder extends Seeder
                     'https://i.imgur.com/5jGNj02.jpeg',
                     'https://i.imgur.com/IhCbIxn.jpeg',
                     'https://i.imgur.com/Z421uiX.jpeg',
+                    'https://i.imgur.com/Oprldb6.jpeg',
                 ],
             ],
             [
