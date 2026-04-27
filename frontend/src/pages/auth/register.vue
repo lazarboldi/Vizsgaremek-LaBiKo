@@ -8,6 +8,20 @@ const authStore = useAuthStore()
 const { loading, errorMessage, successMessage, registerForm, isAuthenticated } = storeToRefs(authStore)
 
 const submit = async () => {
+  const hasMissingRequiredFields = [
+    registerForm.value.name,
+    registerForm.value.email,
+    registerForm.value.phone,
+    registerForm.value.password,
+    registerForm.value.password_confirmation
+  ].some(value => !String(value || '').trim())
+
+  if (hasMissingRequiredFields) {
+    errorMessage.value = 'Kérjük, töltse ki a kötelező mezőket.'
+    successMessage.value = ''
+    return
+  }
+
   await authStore.register()
 }
 </script>
@@ -32,7 +46,7 @@ const submit = async () => {
               Vissza a főoldalra
             </RouterLink>
           </template>
-          <form v-else class="mt-7 space-y-4" @submit.prevent="submit">
+          <form v-else class="mt-7 space-y-4" @submit.prevent="submit" novalidate>
             <label class="block">
               <span class="mb-1 block text-sm font-semibold text-slate-700">Név</span>
               <div class="rounded-lg border border-slate-300 bg-white px-3 py-2">
@@ -93,19 +107,21 @@ const submit = async () => {
                 />
               </div>
             </label>
-            <p v-if="errorMessage" class="m-0 rounded-lg bg-red-100 px-3 py-2 text-sm font-semibold text-red-700">
-              {{ errorMessage }}
-            </p>
-            <p v-if="successMessage" class="m-0 rounded-lg bg-green-100 px-3 py-2 text-sm font-semibold text-green-700">
-              {{ successMessage }}
-            </p>
-            <button
-              type="submit"
-              class="w-full rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-70"
-              :disabled="loading"
-            >
-              {{ loading ? 'Folyamatban...' : 'Regisztráció' }}
-            </button>
+            <div class="mt-5 space-y-5">
+              <p v-if="errorMessage" class="rounded-lg bg-red-100 px-3 py-2 text-sm font-semibold text-red-700">
+                {{ errorMessage }}
+              </p>
+              <p v-if="successMessage" class="rounded-lg bg-green-100 px-3 py-2 text-sm font-semibold text-green-700">
+                {{ successMessage }}
+              </p>
+              <button
+                type="submit"
+                class="w-full rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-70"
+                :disabled="loading"
+              >
+                {{ loading ? 'Folyamatban...' : 'Regisztráció' }}
+              </button>
+            </div>
           </form>
           <p class="mt-4 mb-0 text-sm text-slate-600">
             Már van fiókja?

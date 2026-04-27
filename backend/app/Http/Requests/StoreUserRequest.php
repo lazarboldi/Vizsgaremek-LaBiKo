@@ -28,4 +28,22 @@ class StoreUserRequest extends FormRequest
             'phone' => 'required|string|regex:/^\+?[1-9]\d{7,14}$/',
         ];
     }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'password.confirmed' => 'A jelszavak nem egyeznek.',
+            'password.required' => 'A jelszó megadása kötelező.',
+            'password.min' => 'A jelszónak legalább 8 karakter hosszúnak kell lennie.',
+            'email.required' => 'Az e-mail cím megadása kötelező.',
+            'email.email' => 'Az e-mail cím formátuma érvénytelen.',
+            'email.unique' => 'Ez az e-mail cím már foglalt.',
+            'phone.required' => 'A telefonszám megadása kötelező.',
+            'phone.regex' => 'A telefonszám formátuma érvénytelen.',
+            'name.required' => 'A név megadása kötelező.',
+        ];
+    }
 }

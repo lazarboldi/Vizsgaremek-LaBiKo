@@ -305,6 +305,9 @@ class DatabaseSeeder extends Seeder
                 ],
                 'photos' => [
                     'https://i.imgur.com/GR1CBwK.jpeg',
+                    'https://i.imgur.com/ZT5xNpc.jpeg',
+                    'https://i.imgur.com/L3GSEQQ.jpeg',
+                    'https://i.imgur.com/JjGcZDF.jpeg',
                 ],
             ],
 

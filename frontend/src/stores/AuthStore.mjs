@@ -19,6 +19,33 @@ const usernameFromFullName = (fullName = '') => {
   return firstName.toLowerCase()
 }
 
+const translateAuthError = (message) => {
+  const normalized = String(message || '').trim()
+
+  switch (normalized) {
+    case 'The phone field format is invalid.':
+      return 'A telefonszám formátuma érvénytelen.'
+    case 'The email field must be a valid email address.':
+      return 'Az e-mail cím formátuma érvénytelen.'
+    case 'The email field is required.':
+      return 'Az e-mail cím megadása kötelező.'
+    case 'The password field is required.':
+      return 'A jelszó megadása kötelező.'
+    case 'The password field must be at least 8 characters.':
+      return 'A jelszónak legalább 8 karakter hosszúnak kell lennie.'
+    case 'The password confirmation does not match.':
+      return 'A jelszavak nem egyeznek.'
+    case 'The password confirmation field confirmation does not match.':
+      return 'A jelszavak nem egyeznek.'
+    case 'The password field confirmation does not match.':
+      return 'A jelszavak nem egyeznek.'
+    case 'The email has already been taken.':
+      return 'Ez az e-mail cím már foglalt.'
+    default:
+      return normalized
+  }
+}
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     loading: false,
@@ -56,10 +83,16 @@ export const useAuthStore = defineStore('auth', {
         const fullName = data?.data?.user?.name ?? ''
         this.userRole = data?.data?.user?.role ?? 'user'
         this.userName = usernameFromFullName(fullName)
-        this.successMessage = 'Sikeres bejelentkezes.'
-      } catch {
+        this.successMessage = 'Sikeres bejelentkezés.'
+      } catch (error) {
         this.userRole = 'user'
-        this.errorMessage = 'Sikertelen bejelentkezes.'
+
+        const validationErrors = error.response?.data?.errors
+        const firstValidationError = validationErrors
+          ? translateAuthError(Object.values(validationErrors)[0]?.[0])
+          : ''
+
+        this.errorMessage = firstValidationError || 'Sikertelen bejelentkezés.'
       } finally {
         this.loading = false
       }
@@ -71,7 +104,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         const { data } = await api.post('registration', this.registerForm)
         this.userName = usernameFromFullName(this.registerForm.name)
-        this.successMessage = data?.message ?? 'Sikeres regisztracio.'
+        this.successMessage = data?.message ?? 'Sikeres regisztráció.'
         this.registerForm = defaultRegisterForm()
       } catch (error) {
         const validationErrors = error.response?.data?.errors
@@ -80,7 +113,7 @@ export const useAuthStore = defineStore('auth', {
           ? Object.values(validationErrors)[0]?.[0]
           : null
 
-        this.errorMessage = phoneError || firstValidationError || 'Sikertelen regisztracio.'
+        this.errorMessage = translateAuthError(phoneError || firstValidationError) || 'Sikertelen regisztráció.'
       } finally {
         this.loading = false
       }
