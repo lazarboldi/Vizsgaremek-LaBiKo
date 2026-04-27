@@ -431,6 +431,56 @@ class DatabaseSeeder extends Seeder
                     'https://i.imgur.com/FOHBPxG.jpeg',
                 ],
             ],
+             [
+                'car' => [
+                    'brand' => 'Volkswagen',
+                    'model' => 'Golf 6',
+                    'color' => 'Fehér',
+                    'description' => 'Megkímélt, jó állapotú Volkswagen Golf 6 eladó, rendszeresen karbantartott, megbízható és kényelmes autó, amely napi használatra és hosszabb utakra is tökéletes választás.',
+                    'year' => 2012,
+                    'mileage' => 128000,
+                    'fuel_type' => 'Benzin',
+                    'transmission' => 'Manuális',
+                    'engine_size' => 1195,
+                    'body_type' => 'Ferdehátú',
+                    'horsepower' => 105,
+                ],
+                'listing' => [
+                    'price' => 4200000,
+                    'status' => 'active',
+                ],
+                'photos' => [
+                    'https://i.imgur.com/4zqCFm7.jpeg',
+                    'https://i.imgur.com/deBLUBo.jpeg',
+                    'https://i.imgur.com/vugUtqh.jpeg',
+                    'https://i.imgur.com/tgA7Wzy.jpeg',
+
+                ],
+            ],
+            [
+                'car' => [
+                    'brand' => 'BMW',
+                    'model' => 'E93',
+                    'color' => 'Szürke',
+                    'description' => 'Arany berakásos belső ezért drágább, jó állapotban van, rendszeresen karbantartott.',
+                    'year' => 2012,
+                    'mileage' => 128000,
+                    'fuel_type' => 'Dízel',
+                    'transmission' => 'Manuális',
+                    'engine_size' => 3000,
+                    'body_type' => 'Cabrio',
+                    'horsepower' => 267,
+                ],
+                'listing' => [
+                    'price' => 67000000,
+                    'status' => 'active',
+                ],
+                'photos' => [
+                    'https://i.imgur.com/kWcOkHi.jpeg',
+                    'https://i.imgur.com/vVHi6oq.jpeg',
+                    'https://i.imgur.com/UaRSuG9.jpeg',
+                ],
+            ],
         ];
 
         foreach ($examples as $index => $example) {
