@@ -6,7 +6,7 @@ import { Menu, X } from 'lucide-vue-next'
 import { useAuthStore } from '@stores/AuthStore.mjs'
 
 const baseNavigationItems = [
-  { label: 'Kedvencek', route: '/' },
+  { label: 'Gyűjtemény', route: '/collection' },
   { label: 'Új hírdetés', route: '/listing/new', isActive: false }
 ]
 
