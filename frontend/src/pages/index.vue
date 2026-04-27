@@ -1,7 +1,4 @@
 <script setup>
-import {
-  ChevronRight,
-} from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
 
 import BaseCard from '@components/layout/BaseCard.vue'
@@ -11,7 +8,14 @@ import { useListing } from '@stores/NewListingStore.mjs'
 
 const homeStore = useListingStore()
 const newListingStore = useListing()
-const filterValue = ref('')
+const selectedFilters = ref({
+  brand: '',
+  model: '',
+  body: '',
+  fuel: '',
+  year: '',
+  price: ''
+})
 const visibleAdsCount = ref(8)
 const activeSortTab = ref('price')
 const sortDirection = ref('asc')
@@ -75,40 +79,74 @@ const allCars = computed(() => {
   return [...mappedCars, ...mappedListings]
 })
 
-const activeFilterLabel = computed(() => {
-  const activeFilter = homeStore.filters.find(filter => filter.id === homeStore.activeFilterId)
-  return activeFilter?.label || 'Szűrés'
-})
+const normalizeFilterOption = value => String(value ?? '').trim()
 
-const filteredCars = computed(() => {
-  const query = filterValue.value.trim().toLowerCase()
+const buildUniqueFilterOptions = values => [...new Set(
+  values
+    .map(normalizeFilterOption)
+    .filter(Boolean)
+)].sort((a, b) => a.localeCompare(b, 'hu', { numeric: true, sensitivity: 'base' }))
 
-  if (!query) {
-    return allCars.value
+const modelOptions = computed(() => {
+  const selectedBrand = normalizeFilterOption(selectedFilters.value.brand)
+
+  if (!selectedBrand) {
+    return buildUniqueFilterOptions(allCars.value.map(car => car.model))
   }
 
+  return buildUniqueFilterOptions(
+    allCars.value
+      .filter(car => normalizeFilterOption(car.brand).toLowerCase() === selectedBrand.toLowerCase())
+      .map(car => car.model)
+  )
+})
+
+const filterOptions = computed(() => ({
+  brand: buildUniqueFilterOptions(allCars.value.map(car => car.brand)),
+  model: modelOptions.value,
+  body: buildUniqueFilterOptions(allCars.value.map(car => car.bodyType)),
+  fuel: buildUniqueFilterOptions(allCars.value.map(car => car.fuelType)),
+  year: buildUniqueFilterOptions(allCars.value.map(car => car.year)),
+  price: buildUniqueFilterOptions(allCars.value.map(car => car.price))
+}))
+
+const getCarFilterValue = (car, filterId) => {
+  switch (filterId) {
+    case 'brand':
+      return car.brand
+    case 'model':
+      return car.model
+    case 'body':
+      return car.bodyType
+    case 'fuel':
+      return car.fuelType
+    case 'year':
+      return car.year
+    case 'price':
+      return car.price
+    default:
+      return ''
+  }
+}
+
+const resetFilters = () => {
+  Object.keys(selectedFilters.value).forEach((filterId) => {
+    selectedFilters.value[filterId] = ''
+  })
+}
+
+const filteredCars = computed(() => {
   return allCars.value.filter((car) => {
-    switch (homeStore.activeFilterId) {
-      case 'brand':
-        return (car.brand || '').toLowerCase().includes(query)
-      case 'model':
-        return (car.model || '').toLowerCase().includes(query)
-      case 'body':
-        return (car.bodyType || '').toLowerCase().includes(query)
-      case 'fuel':
-        return (car.fuelType || '').toLowerCase().includes(query)
-      case 'year':
-        return String(car.year || '').includes(query)
-      case 'price': {
-        const maxPrice = Number(query)
-        if (Number.isNaN(maxPrice)) {
-          return true
-        }
-        return Number(car.price || 0) <= maxPrice
-      }
-      default:
+    return Object.entries(selectedFilters.value).every(([filterId, selectedValue]) => {
+      const selected = String(selectedValue || '').trim().toLowerCase()
+
+      if (!selected) {
         return true
-    }
+      }
+
+      const currentValue = String(getCarFilterValue(car, filterId) || '').trim().toLowerCase()
+      return currentValue === selected
+    })
   })
 })
 
@@ -136,11 +174,16 @@ const loadMoreCars = () => {
   visibleAdsCount.value += 8
 }
 
-watch([
-  filterValue,
-  () => homeStore.activeFilterId
-], () => {
+watch(selectedFilters, () => {
   visibleAdsCount.value = 8
+}, { deep: true })
+
+watch(() => selectedFilters.value.brand, () => {
+  const selectedModel = normalizeFilterOption(selectedFilters.value.model)
+
+  if (selectedModel && !modelOptions.value.includes(selectedModel)) {
+    selectedFilters.value.model = ''
+  }
 })
 
 watch([
@@ -169,32 +212,34 @@ onMounted(async () => {
           <h2 class="m-0 border-b border-slate-200 px-5 py-5 text-4xl leading-tight font-extrabold max-sm:text-3xl">
             Szűrés
           </h2>
-          <ul class="m-0 list-none p-2.5">
-            <li v-for="filter in homeStore.filters" :key="filter.id" class="not-last:mb-1">
-              <button
-                type="button"
-                :class="[
-                  'flex w-full items-center justify-between rounded-lg border-0 bg-transparent px-3 py-3.5 text-slate-600 transition-all duration-200 hover:bg-slate-100',
-                  homeStore.activeFilterId === filter.id
-                    ? 'rounded-l-none border-l-[3px] border-l-orange-500 bg-slate-50 text-slate-900'
-                    : ''
-                ]"
-                @click="homeStore.activeFilterId = filter.id"
+          <div class="space-y-3 px-4 py-4">
+            <label
+              v-for="filter in homeStore.filters"
+              :key="filter.id"
+              class="block"
+            >
+              <span class="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-500">{{ filter.label }}</span>
+              <select
+                v-model="selectedFilters[filter.id]"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
               >
-                <span class="inline-flex items-center gap-[0.7rem]">
-                  <span class="text-[1.02rem] font-bold">{{ filter.label }}</span>
-                </span>
-                <ChevronRight :size="18" class="text-slate-400" />
-              </button>
-            </li>
-          </ul>
-          <div class="px-4 pb-4">
-            <input
-              v-model="filterValue"
-              type="text"
-              :placeholder="`${activeFilterLabel}...`"
-              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
-            />
+                <option value="">Összes</option>
+                <option
+                  v-for="option in filterOptions[filter.id] || []"
+                  :key="`${filter.id}-${option}`"
+                  :value="option"
+                >
+                  {{ option }}
+                </option>
+              </select>
+            </label>
+            <button
+              type="button"
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-orange-500 hover:text-orange-600"
+              @click="resetFilters"
+            >
+              Szűrők törlése
+            </button>
           </div>
         </aside>
         <section aria-label="Autók listázása">
