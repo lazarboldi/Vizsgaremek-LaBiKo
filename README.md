@@ -109,6 +109,12 @@ docker compose exec frontend sh -lc "pnpm test"
 ```
 ## Linkek
 
+### Tesztelési jegyzőkönyv
+https://docs.google.com/spreadsheets/d/1FOAz9LTY7X4WHUbLdIdKzimzrGW03zhCieTO6TcZ07E/edit?usp=sharing
+
+### Adatbázis terv
+https://docs.google.com/document/d/1ZbzqrCYLM9h3Gz7TnjIqLDFdFM7ly-3NH5y2PcuWR0o/edit?usp=sharing
+
 ### Figma
 https://www.figma.com/files/project/474960549
 
