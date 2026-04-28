@@ -143,5 +143,5 @@ s
 ### Layout
 
 - `BaseLayout.vue`: BaseHeader + tartalom+ BaseFooter
-- `BaseCard-vue`: Egy konkrét hirdetés megjelenítése a főoldalon
+- `BaseCard.vue`: Egy konkrét hirdetés megjelenítése a főoldalon
 - `BaseHeader.vue`: role/auth alapján menüpontok
