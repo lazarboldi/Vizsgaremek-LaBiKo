@@ -15,8 +15,7 @@ const defaultRegisterForm = () => ({
 })
 
 const usernameFromFullName = (fullName = '') => {
-  const firstName = fullName.trim().split(/\s+/)[0] ?? ''
-  return firstName.toLowerCase()
+  return String(fullName ?? '').trim()
 }
 
 const translateAuthError = (message) => {
