@@ -1,24 +1,119 @@
-# Fullstack 2025
+# 2026_LáBiKo – Carlink projekt
 
-Figyelem! Mivel a Docker Compose és több container is igényt tart a `.env` fájlra, így az eredetileg a backendben lévő `.env.example` a projekt gyökerében található. Ezt kell lemásolni `.env` néven, majd igény szerint beállítani. Ezután a Docker Compose felcsatolja a szükséges containerekhez. 
-## Indítás
+## Projektleírás
+A projektünk lényege egy weboldal, ahol a felhasználók autóikat eladásra hirdethetik meg, illetve a már meghirdetett autók között böngészhetnek és érdeklődhetnek azok iránt.
 
-A rendszer inicializálását és az első indítását a `start.sh` script végzi.
+---
+
+## Felhasználói jogosultságok
+
+### User (Felhasználó)
+A sima felhasználó az alábbi műveletekre képes:
+
+- fiók létrehozása
+- új hirdetés létrehozása
+- hirdetések megtekintése
+- hirdetések mentése saját gyűjteményébe, hogy később is könnyen elérhesse őket
+
+---
+
+###  Admin (Adminisztrátor)
+Az adminisztrátor külön admin felülettel rendelkezik, ahol:
+
+- az új hirdetéseket jóváhagyhatja
+- az új hirdetéseket elutasíthatja
+- meglévő hirdetéseket törölhet
+
+---
+
+## Seedelt felhasználók
+
+### User
+| Adat | Érték |
+|------|------|
+| **Email** | `test@example.com` |
+| **Jelszó** | `Password1234` |
+| **Telefonszám** | `+36201234567` |
+
+### Admin
+| Adat | Érték |
+|------|------|
+| **Email** | `admin@example.com` |
+| **Jelszó** | `Admin1234` |
+| **Telefonszám** | `+36209999999` |
+
+---
+
+## Projekt indítása
+
+### 1. Repository klónozása
+```bash
+git clone https://github.com/lazarboldi/Vizsgaremek-LaBiKo
+```
+
+### 2. Belépés a projekt mappájába
+```bash
+cd Vizsgaremek-LaBiKo
+```
+
+### 3. Indító script futtatása
+Adjunk futtatási jogosultságot a `start.sh` fájlnak, majd futtassuk:
 
 ```bash
+chmod +x ./start.sh
 ./start.sh
 ```
 
-## Leállítás
+### 4. Adatbázis seedelése
+Miután a projekt elindult, lépjünk be a konténerbe, majd futtassuk a migrációt seedeléssel:
 
 ```bash
-docker compose stop
+docker compose exec backend fish
+php artisan migrate:fresh --seed
 ```
 
-## Eltávolítás
+---
+
+## Elérhető URL-ek
+
+| Szolgáltatás | URL |
+|------------|-----|
+| Frontend | http://frontend.vm1.test |
+| Swagger | http://swagger.vm1.test |
+| phpMyAdmin | http://pma.vm1.test |
+
+---
+
+## Tesztek futtatása
+
+### Backend tesztek futtatása
+
+A backend tesztek futtatásához lépjünk be a backend konténerbe:
 
 ```bash
-docker compose down -v
+docker compose exec backend fish
 ```
 
- - A `-v` hatására a volume-okat is törli, így az adatbázisban tárolt adatok elvesznek.
+Majd futtassuk le a Laravel teszteket:
+
+```bash
+php artisan test
+```
+
+### Frontend tesztek futtatása
+
+A frontend tesztek futtatásához futtassuk az alábbi parancsot:
+
+```bash
+docker compose exec frontend sh -lc "pnpm test"
+```
+## Linkek
+
+### Figma
+https://www.figma.com/files/project/474960549
+
+### Trello
+https://trello.com/invite/b/691edf85f62832381fd99d5c/ATTI66a259458908e8e021963144ad998f1037900932/labiko-carlink
+
+### GitHub Repository
+https://github.com/lazarboldi/Vizsgaremek-LaBiKo
