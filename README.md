@@ -112,6 +112,9 @@ docker compose exec frontend sh -lc "pnpm test"
 ### Tesztelési jegyzőkönyv
 https://docs.google.com/spreadsheets/d/1FOAz9LTY7X4WHUbLdIdKzimzrGW03zhCieTO6TcZ07E/edit?usp=sharing
 
+### Tesztelési terv
+https://docs.google.com/document/d/1lXrbo-nW3_2pAdBRUff8YFEo-fhFMikonittsUJddZg/edit?usp=sharing
+
 ### Adatbázis terv
 https://docs.google.com/document/d/1ZbzqrCYLM9h3Gz7TnjIqLDFdFM7ly-3NH5y2PcuWR0o/edit?usp=sharing
 
