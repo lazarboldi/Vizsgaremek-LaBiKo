@@ -28,7 +28,7 @@ const submit = async () => {
 
 <template>
   <BaseLayout>
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 text-slate-800">
+    <div class="self-center text-slate-800">
       <main class="mx-auto max-w-[680px] px-4 py-8 md:px-6">
         <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h1 class="m-0 text-3xl font-extrabold text-slate-800">Regisztráció</h1>
