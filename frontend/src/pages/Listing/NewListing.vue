@@ -66,6 +66,87 @@ const preventNegativeValue = (field) => {
   form.value[field] = raw.replace(/-/g, '')
 }
 
+const setHungarianValidationMessage = (event) => {
+  const field = event.target
+
+  if (!field || typeof field.setCustomValidity !== 'function') {
+    return
+  }
+
+  field.setCustomValidity('')
+
+  if (field.validity?.valueMissing) {
+    field.setCustomValidity('Kérjük, töltse ki ezt a mezőt.')
+  }
+}
+
+const clearHungarianValidationMessage = (event) => {
+  const field = event.target
+
+  if (!field || typeof field.setCustomValidity !== 'function') {
+    return
+  }
+
+  field.setCustomValidity('')
+}
+
+const translateValidationMessageToHungarian = (message) => {
+  if (!message || typeof message !== 'string') {
+    return message
+  }
+
+  const fieldNames = {
+    title: 'cím',
+    description: 'leírás',
+    brand: 'márka',
+    model: 'modell',
+    year: 'évjárat',
+    price: 'ár',
+    horsepower: 'lóerő',
+    fuel_type: 'üzemanyag',
+    body_type: 'kivitel',
+    mileage: 'kilométeróra állás',
+    transmission: 'váltó',
+    color: 'szín',
+    engine_size: 'motorméret',
+    images: 'képek'
+  }
+
+  const normalized = message.trim()
+  const fieldMatch = normalized.match(/^The\s+([a-zA-Z0-9_]+)\s+field\s+/)
+  const fieldKey = fieldMatch?.[1]?.toLowerCase()
+  const fieldLabel = fieldNames[fieldKey] || fieldKey
+
+  if (/^The\s+[a-zA-Z0-9_]+\s+field\s+is\s+required\.?$/i.test(normalized)) {
+    return `A(z) ${fieldLabel} mező kitöltése kötelező.`
+  }
+
+  if (/^The\s+[a-zA-Z0-9_]+\s+field\s+must\s+be\s+a\s+number\.?$/i.test(normalized)) {
+    return `A(z) ${fieldLabel} mezőnek számnak kell lennie.`
+  }
+
+  if (/^The\s+[a-zA-Z0-9_]+\s+field\s+must\s+be\s+an\s+integer\.?$/i.test(normalized)) {
+    return `A(z) ${fieldLabel} mezőnek egész számnak kell lennie.`
+  }
+
+  const maxMatch = normalized.match(/^The\s+[a-zA-Z0-9_]+\s+field\s+must\s+not\s+be\s+greater\s+than\s+(.+)\.?$/i)
+  if (maxMatch) {
+    return `A(z) ${fieldLabel} mező nem lehet nagyobb, mint ${maxMatch[1]}`
+  }
+
+  const minMatch = normalized.match(/^The\s+[a-zA-Z0-9_]+\s+field\s+must\s+be\s+at\s+least\s+(.+)\.?$/i)
+  if (minMatch) {
+    return `A(z) ${fieldLabel} mező minimum értéke ${minMatch[1]}.`
+  }
+
+  const gteMatch = normalized.match(/^The\s+[a-zA-Z0-9_]+\s+field\s+must\s+be\s+greater\s+than\s+or\s+equal\s+(.+)\.?$/i)
+  if (gteMatch) {
+    return `A(z) ${fieldLabel} mező legalább ${gteMatch[1]} kell legyen.`
+  }
+
+  return message
+}
+
 const handleSubmit = async () => {
   if (isLoading.value) {
     return
@@ -137,7 +218,8 @@ const handleSubmit = async () => {
     const firstValidationError = validationErrors
       ? Object.values(validationErrors)[0]?.[0]
       : null
-    errorMessage.value = firstValidationError || error.response?.data?.message || error.message || 'Hiba a hirdetés létrehozásakor!'
+    const rawMessage = firstValidationError || error.response?.data?.message || error.message || 'Hiba a hirdetés létrehozásakor!'
+    errorMessage.value = translateValidationMessageToHungarian(rawMessage)
     console.error(error)
   } finally {
     isLoading.value = false
@@ -164,7 +246,14 @@ const handleSubmit = async () => {
             >
               {{ errorMessage }}
             </div>
-            <form @submit.prevent="handleSubmit" class="space-y-6">
+            <form
+              @submit.prevent="handleSubmit"
+              @invalid.capture="setHungarianValidationMessage"
+              @input.capture="clearHungarianValidationMessage"
+              @change.capture="clearHungarianValidationMessage"
+              class="space-y-6"
+              lang="hu-HU"
+            >
               <!-- cím -->
               <div>
                 <label for="title" class="block text-sm font-semibold text-slate-700 mb-2">
