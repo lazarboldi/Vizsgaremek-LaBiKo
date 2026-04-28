@@ -1,5 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import BaseLayout from '@layouts/BaseLayout.vue'
@@ -9,6 +10,10 @@ const authStore = useAuthStore()
 const { loading, errorMessage, successMessage, loginForm, isAuthenticated } = storeToRefs(authStore)
 const route = useRoute()
 const router = useRouter()
+
+onMounted(() => {
+  authStore.resetMessages()
+})
 
 const submit = async () => {
   const hasMissingRequiredFields = [

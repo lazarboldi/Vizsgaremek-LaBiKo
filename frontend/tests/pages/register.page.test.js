@@ -30,6 +30,10 @@ const createAuthStore = () => {
   })
 
   return {
+    resetMessages: vi.fn(() => {
+      errorMessage.value = ''
+      successMessage.value = ''
+    }),
     register: vi.fn(async () => {}),
     __refs: {
       loading,

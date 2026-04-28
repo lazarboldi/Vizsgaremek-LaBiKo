@@ -1,11 +1,16 @@
 <script setup>
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
 
 import { useAuthStore } from '@stores/AuthStore.mjs'
 import BaseLayout from '@layouts/BaseLayout.vue'
 
 const authStore = useAuthStore()
 const { loading, errorMessage, successMessage, registerForm, isAuthenticated } = storeToRefs(authStore)
+
+onMounted(() => {
+  authStore.resetMessages()
+})
 
 const submit = async () => {
   const hasMissingRequiredFields = [

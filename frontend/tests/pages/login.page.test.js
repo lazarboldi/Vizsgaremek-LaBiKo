@@ -47,6 +47,10 @@ const createAuthStore = () => {
     successMessage,
     loginForm,
     isAuthenticated: false,
+    resetMessages: vi.fn(() => {
+      errorMessage.value = ''
+      successMessage.value = ''
+    }),
     login: vi.fn(async () => {}),
     __refs: {
       loading,
