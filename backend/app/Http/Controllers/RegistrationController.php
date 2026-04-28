@@ -14,7 +14,7 @@ class RegistrationController extends Controller
         $user = User::create($data);
 
         return response()->json([
-            'message' => "A(z) {$user->email} sikeresen regisztralva.",
+            'message' => "A(z) {$user->email} sikeresen regisztrálva.",
             'user' => $user,
         ]);
     }
