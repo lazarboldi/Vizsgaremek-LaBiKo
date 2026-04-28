@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Carimage extends Model
 {
+    protected  $primaryKey = 'car_imageid';
+
     protected $fillable = [
         'car_id',
         'image_url'
@@ -13,6 +15,6 @@ class Carimage extends Model
 
     public function car()
     {
-        return $this->belongsTo(Car::class);
+        return $this->belongsTo(Car::class, 'car_id');
     }
 }
