@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('car_id')->constrained();
             $table->Integer('price');
-            $table->enum('status', ['active', 'sold', 'archived'])->default('active');
+            $table->enum('status', ['pending','active', 'sold', 'archived'])->default('pending');
             $table->timestamps();
         });
     }
